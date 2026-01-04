@@ -1,6 +1,6 @@
 import Hero from "../components/sections/Hero";
-import GetStartedSection from "../components/sections/GetStarted";
 import FilmReel from "../components/sections/FilmReel";
+import Content from "../components/sections/Content";
 
 export default function Home() {
 
@@ -9,8 +9,8 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <GetStartedSection />
-      <FilmReel />
+      {/* <FilmReel /> */}
+      <Content />
     </>
   );
 }

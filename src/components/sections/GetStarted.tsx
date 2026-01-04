@@ -10,7 +10,7 @@ export default function GetStartedSection() {
 
 
     return (
-        <section className="flex flex-col items-center mb-20 test_border">
+        <section className="flex flex-col items-center mb-20">
             {/* We use your generic UI Button here */}
             <Button text="Get Started!" onClick={onGetStartedClick} />
         </section>

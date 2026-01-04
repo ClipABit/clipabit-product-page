@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import localFont from "next/font/local";
 
 import Header from "../components/ui/Header";
 import Footer from "../components/ui/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const clashDisplay = localFont({
+  variable: "--font-clash-display",
+  src: "../../public/fonts/ClashDisplay-Variable.woff2",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,8 +23,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script src="https://waitlister.me/js/embed.js" defer></script>
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${clashDisplay.variable} antialiased`}
       >
         <Header />
         {children}
