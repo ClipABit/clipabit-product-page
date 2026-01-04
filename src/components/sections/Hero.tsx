@@ -7,8 +7,8 @@ type Props = {}
 function Hero({ }: Props) {
     return (
         <section>
-            <div className='flex flex-row items-center justify-between px-20 py-10'>
-                <div className='flex-1'>
+            <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 py-10'>
+                <div className='flex-1 text-center md:text-left'>
                     <div className="line1">
                         <p className='hero-title-text text-black dark:text-white mt-4'>ClipABit</p>
                     </div>
@@ -21,17 +21,17 @@ function Hero({ }: Props) {
                         <p className='hero-subtitle-text text-gray-600 dark:text-gray-300 mt-4'>Every moment, one search away</p>
                     </div>
                 </div>
-                <div className='flex-1 flex justify-center items-center'>
-                    <Image src="/davinci_logo.svg" alt="Davinci Logo" width={400} height={400} />
+                <div className='flex-1 flex justify-center items-center mt-10 md:mt-0'>
+                    <Image src="/davinci_logo.svg" alt="Davinci Logo" width={400} height={400} className="w-60 md:w-auto h-auto" />
                 </div>
             </div>
-            <div className=''>
+            <div className='px-4 md:px-0'>
                 <Image
                     src="/timeline_graphic.svg"
                     alt="Video Editor Timeline"
                     width={1200}
                     height={100}
-                    className='mx-auto mb-10'
+                    className='mx-auto mb-10 w-full md:w-auto h-auto'
                 />
             </div>
         </section>

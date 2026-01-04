@@ -3,7 +3,7 @@ export default function DemoVideo() {
 
     return (
         <video
-            className="rounded-lg shadow-lg" width={800} height={650} controls>
+            className="rounded-lg shadow-lg w-full md:w-[600px] h-auto" controls>
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
         </video>

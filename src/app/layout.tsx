@@ -24,7 +24,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <script src="https://waitlister.me/js/embed.js" defer></script>
       </head>
       <body
         className={`${clashDisplay.variable} antialiased`}

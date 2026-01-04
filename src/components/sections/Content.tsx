@@ -31,38 +31,39 @@ export default function Content({ }: Props) {
     }, []);
 
     return (
-        <section className="flex flex-col items-center justify-center space-y-20 px-20 py-10">
-            <section className="w-full flex flex-row">
-                <div>
-                    <h1 className='text-5xl font-[550] text-black dark:text-white mb-10'>How ClipABit Works</h1>
-                    <p className='text-lg text-gray-600 dark:text-gray-300 mt-6 max-w-3xl text-left mr-16'>
-                        ClipABit leverages advanced AI algorithms to analyze video content, allowing users to effortlessly search and retrieve specific clips based on keywords or phrases. Simply input your desired search terms, and ClipABit will scan through your video library to find the most relevant segments, making video editing faster and more efficient than ever before.
+        <section className="flex flex-col items-center justify-center space-y-20 px-4 md:px-20 py-10">
+            <section className="w-full flex flex-col md:flex-row justify-between gap-10">
+                <div className="w-full md:w-[50%]">
+                    <h1 className='text-3xl md:text-5xl font-[550] text-black dark:text-white mb-10 text-center md:text-left'>How It Works</h1>
+                    <p className='text-xl leading-relaxed text-gray-600 dark:text-gray-300 mt-6 max-w-xl text-left'>
+                        ClipABit leverages advanced AI algorithms to analyze video content, allowing users to effortlessly search and retrieve specific clips based on keywords or phrases. Simply enter your desired search terms, and ClipABit will scan through your video library to find the most relevant segments, making video editing faster and more efficient than ever before.
                     </p>
                 </div>
-                <div>
+                <div className="w-full md:w-auto flex justify-center md:block relative">
                     <DemoVideo />
                 </div>
             </section>
 
-            <section className="w-full flex flex-row justify-between gap-10">
-                <div className="w-[50%]">
-                    <h1 className='text-6xl font-[550] text-black dark:text-white mb-10'>About Us</h1>
-                    <p className='text-lg text-gray-600 dark:text-gray-300 mt-6 max-w-3xl text-left mb-16'>
-                        Our team is a group of 9 passionate UWaterloo students passionate about the use of AI and its potential to revolutionize the video editing process for creators worldwide. We are dedicated to developing innovative solutions that empower users to create high-quality content with ease and efficiency.
+            <section className="w-full flex flex-col md:flex-row justify-between gap-10">
+                <div className="w-full md:w-[50%]">
+                    <h1 className='text-4xl md:text-6xl font-[550] text-black dark:text-white mb-10 text-center md:text-left'>About Us</h1>
+                    <p className='text-xl leading-relaxed text-gray-600 dark:text-gray-300 mt-6 max-w-xl text-left mb-16'>
+                        Our team is a group of passionate UWaterloo students trying revolutionize the video editing process with the power of AI. We are on a mission to eliminate the tedious work, so editors can focus on the creative again.
                     </p>
                 </div>
-                <div>
-                    <img src="https://firebasestorage.googleapis.com/v0/b/clipabit.firebasestorage.app/o/team.webp?alt=media&token=b7242bfc-05e6-4c6f-874d-face760d5411" alt="Team Photo" className="rounded-lg shadow-lg " width={600} height={500} />
+                <div className="w-full md:w-auto flex justify-center md:block">
+                    <img src="https://firebasestorage.googleapis.com/v0/b/clipabit.firebasestorage.app/o/team.webp?alt=media&token=b7242bfc-05e6-4c6f-874d-face760d5411" alt="Team Photo" className="rounded-lg shadow-lg w-full md:w-[600px] h-auto" width={600} height={500} />
                 </div>
             </section>
 
-            <section className="w-full flex flex-col items-center justify-center">
-                <h2 className='text-6xl font-bold text-black dark:text-white'>Like What You See?</h2>
+            <section className="w-full flex flex-col items-center justify-center text-center">
+                <h2 className='text-4xl md:text-6xl font-bold text-black dark:text-white'>Like What You See?</h2>
                 <p className="mb-5">Then join the waitlist by filling out the form below!</p>
                 {/* <a href="https://clipabit.streamlit.app/search_demo" className="mt-8 px-6 py-3 bg-[#FAAF04] text-black rounded hover:bg-[#e6a800] text-2xl font-semibold">
                     Try the Demo!
                 </a> */}
-                <div ref={waitlistRef} className="waitlister-form w-full pl-[26%]" data-waitlist-key="-i8DggpXQdia" data-height="400px"></div>
+                {/* Waitlist form is injected via useEffect to prevent hydration errors */}
+                <div ref={waitlistRef} className="w-full pl-0 md:pl-[26%]"></div>
 
             </section>
 
