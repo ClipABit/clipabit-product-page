@@ -11,32 +11,31 @@ function Header({ }: Props) {
     const [isBrightMode, setIsBrightMode] = useState(true);
 
     return (
-        <header className="flex items-center justify-between p-4 bg-white dark:bg-black pb-0">
-            <div className='flex row items-center' >
-                <Link href="/" className="text-2xl font-bold text-black dark:text-white mr-4">
+        <header className="flex items-center justify-between px-4 py-2 bg-white dark:bg-black">
+            <div className='flex items-center' >
+                <Link href="/" className="flex items-center mr-4">
                     <Image
                         src="/logo.svg"
                         alt="Logo"
                         width={250}
                         height={100}
-                        className="w-40 md:w-[250px] h-auto"
+                        className="w-28 md:w-[180px] h-auto mt-1"
                     />
                 </Link>
             </div>
-            <div className='row-gap-8 flex space-x-8 mr-2 md:mr-8 justify-end'>
-                {/* <Link href="/" className="font-semibold text-black dark:text-white">
-                    <h3 className="text-lg font-semibold text-black dark:text-white">About</h3>
-                </Link> */}
-                <Link href="https://clipabit.streamlit.app" className="text-xl font-semibold text-black dark:text-white">
-                    <h3 className="text-xl font-semibold text-black dark:text-white">Try the Demo</h3>
-                </Link> 
-                {/* <Image
-                    src={isBrightMode ? "/bright_mode.svg" : "/dark_mode.svg"}
-                    alt="GitHub Icon"
-                    width={27}
-                    height={27}
-                    onClick={() => setIsBrightMode(!isBrightMode)}
-                /> */}
+            <div className='flex items-center space-x-3 md:space-x-8 mr-2 md:mr-8 justify-end'>
+                <Link 
+                    href="https://clipabit.streamlit.app" 
+                    className="text-md md:text-xl font-semibold text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 active:scale-95 transition-all whitespace-nowrap"
+                >
+                    Try the Demo
+                </Link>
+                <Link 
+                    href="#waitlist" 
+                    className="px-2 py-1 md:px-4 md:py-2 text-md md:text-lg bg-[#FAAF04] text-black rounded-lg font-semibold hover:bg-[#e6a800] active:bg-[#cc9600] active:scale-95 transition-all whitespace-nowrap"
+                >
+                    Join Waitlist
+                </Link>
             </div>
         </header >
     )

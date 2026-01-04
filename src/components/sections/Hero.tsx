@@ -7,7 +7,7 @@ type Props = {}
 function Hero({ }: Props) {
     return (
         <section>
-            <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 py-10'>
+            <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-4 pb-10'>
                 <div className='flex-1 text-center md:text-left'>
                     <div className="line1">
                         <p className='hero-title-text text-black dark:text-white mt-4'>ClipABit</p>
