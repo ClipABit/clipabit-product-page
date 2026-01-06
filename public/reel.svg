@@ -1,0 +1,24 @@
+<svg width="2400" height="264" viewBox="0 0 2400 264" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="film-pattern" x="0" y="0" width="240" height="264" patternUnits="userSpaceOnUse">
+      
+      <rect y="18" width="240" height="6" fill="white"/>
+      <rect width="240" height="6" fill="white"/>
+      <rect y="258" width="240" height="6" fill="white"/>
+      <rect y="240" width="240" height="6" fill="white"/>
+
+      <rect x="60" width="7" height="24" fill="white"/>
+      <rect x="180" width="7" height="24" fill="white"/>
+      <rect x="60" y="240" width="7" height="24" fill="white"/>
+      <rect x="180" y="240" width="7" height="24" fill="white"/>
+
+      <rect x="47" y="21" width="2" height="225" fill="#7E7D7D"/>
+      <rect x="94" y="21" width="2" height="225" fill="#7E7D7D"/>
+      <rect x="141" y="21" width="2" height="225" fill="#7E7D7D"/>
+      <rect x="191" y="21" width="2" height="225" fill="#7E7D7D"/>
+      <rect x="238" y="21" width="2" height="225" fill="#7E7D7D"/>
+    </pattern>
+  </defs>
+
+  <rect width="4800" height="264" fill="url(#film-pattern)" />
+</svg>

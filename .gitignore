@@ -30,11 +30,17 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# firebase
+.firebase/
+
 # env files (can opt-in for committing if needed)
 .env*
 
 # vercel
 .vercel
+
+# firebase
+/src/lib/firebase.ts
 
 # typescript
 *.tsbuildinfo
