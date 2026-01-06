@@ -36,7 +36,7 @@ export default function Content({ }: Props) {
                 <div className="w-full md:w-[50%]">
                     <h1 className='text-3xl md:text-5xl font-[550] text-black dark:text-white mb-10 text-center md:text-left'>How It Works</h1>
                     <p className='text-xl leading-relaxed text-gray-600 dark:text-gray-300 mt-6 max-w-xl text-left'>
-                        ClipABit leverages advanced AI algorithms to analyze video content, allowing users to effortlessly search and retrieve specific clips based on keywords or phrases. Simply enter your desired search terms, and ClipABit will scan through your video library to find the most relevant segments, making video editing faster and more efficient than ever before.
+                        ClipABit uses zero‑shot image‑text matching to analyze video content, enabling users to instantly search and retrieve specific clips using simple keywords or phrases. Just enter your search terms, and ClipABit scans your entire video library to surface the most relevant segments — making video editing faster and more efficient.
                     </p>
                 </div>
                 <div className="w-full md:w-auto flex justify-center md:block relative">
