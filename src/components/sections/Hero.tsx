@@ -1,24 +1,27 @@
+'use client'
 import GetStartedSection from './GetStarted'
+import {useTheme} from '../../lib/theme'
 
 import Image from 'next/image'
 
 type Props = {}
 
 function Hero({ }: Props) {
+    const { theme } = useTheme();
     return (
         <section>
             <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-4 pb-10'>
                 <div className='flex-1 text-center md:text-left'>
                     <div className="line1">
-                        <p className='hero-title-text text-black dark:text-white mt-4'>ClipABit</p>
+                        <p className={`hero-title-text ${theme === 'dark' ? 'text-white' : 'text-black'} mt-4`}>ClipABit</p>
                     </div>
 
                     <div className="line2">
-                        <p className='hero-subtitle-text text-black dark:text-white mt-4'>Search by ideas, not timestamps</p>
+                        <p className={`hero-subtitle-text ${theme === 'dark' ? 'text-white' : 'text-black'} mt-4`}>Search by ideas, not timestamps</p>
                     </div>
 
                     <div className="line3">
-                        <p className='hero-subtitle-text text-gray-600 dark:text-gray-300 mt-4'>Every moment, one search away</p>
+                        <p className={`hero-subtitle-text ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mt-4`}>Every moment, one search away</p>
                     </div>
                 </div>
                 <div className='flex-1 flex justify-center items-center mt-10 md:mt-0'>

@@ -2,20 +2,28 @@
 
 import { useEffect, useRef } from "react";
 import DemoVideo from "../ui/DemoVideo";
+import {useTheme} from '../../lib/theme'
 
 type Props = {}
 
 export default function Content({ }: Props) {
     const waitlistRef = useRef<HTMLDivElement | null>(null);
+    const { theme } = useTheme();
 
     useEffect(() => {
         if (!waitlistRef.current) return;
 
         // Prevent duplicate iframes
-        if (waitlistRef.current.querySelector('iframe')) return;
+        if (waitlistRef.current.querySelector('iframe')) {
+            waitlistRef.current.innerHTML = '';
+        }
 
         const iframe = document.createElement('iframe');
-        iframe.src = 'https://waitlister.me/form/-i8DggpXQdia';
+        const baseUrl = 'https://waitlister.me/form/-i8DggpXQdia';
+        // If the provider supports theming via query params, this will work.
+        // If not, the param will simply be ignored.
+        const themeParam = `?theme=${theme === 'dark' ? 'dark' : 'light'}`;
+        iframe.src = `${baseUrl}${themeParam}`;
         iframe.scrolling = 'no';
         iframe.setAttribute('frameBorder', '0');
         iframe.style.width = '100%';
@@ -28,7 +36,7 @@ export default function Content({ }: Props) {
         return () => {
             if (waitlistRef.current) waitlistRef.current.innerHTML = '';
         };
-    }, []);
+    }, [theme]);
 
     return (
         <section className="flex flex-col items-center justify-center space-y-20 px-4 md:px-20 py-10">
@@ -57,8 +65,8 @@ export default function Content({ }: Props) {
             </section>
 
             <section id="waitlist" className="w-full flex flex-col items-center justify-center text-center">
-                <h2 className='text-4xl md:text-6xl font-bold text-black dark:text-white'>Like What You See?</h2>
-                <p className="mb-5">Then join the waitlist by filling out the form below!</p>
+                <h2 className={`text-4xl md:text-6xl font-bold ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Like What You See?</h2>
+                <p className={`mb-5 ${theme === 'dark' ? 'text-black-300' : 'text-white-600'}`}>Then join the waitlist by filling out the form below!</p>
                 {/* <a href="https://clipabit.streamlit.app/search_demo" className="mt-8 px-6 py-3 bg-[#FAAF04] text-black rounded hover:bg-[#e6a800] text-2xl font-semibold">
                     Try the Demo!
                 </a> */}

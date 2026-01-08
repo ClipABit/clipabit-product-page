@@ -4,6 +4,7 @@ import localFont from "next/font/local";
 
 import Header from "../components/ui/Header";
 import Footer from "../components/ui/Footer";
+import { ThemeProvider } from "../lib/theme";
 
 const clashDisplay = localFont({
   variable: "--font-clash-display",
@@ -31,9 +32,11 @@ export default function RootLayout({
       <body
         className={`${clashDisplay.variable} antialiased`}
       >
-        <Header />
-        {children}
-        <Footer />
+        <ThemeProvider>
+          <Header />
+          {children}
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

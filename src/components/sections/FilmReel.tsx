@@ -5,6 +5,7 @@ type Props = {}
 
 export default function FilmReel({ }: Props) {
     // 1. Ensure you have enough duplicates to cover the screen width + buffer
+    //need to update the create image... cut off
     const images = [
         "/spark.png", "/pointer.png", "/trudeausac.png", "/socratica.png", "/create.png",
         "/spark.png", "/pointer.png", "/trudeausac.png", "/socratica.png", "/create.png",

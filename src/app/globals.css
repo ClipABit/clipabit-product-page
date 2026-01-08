@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;
@@ -27,6 +28,16 @@
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+/* App-controlled theme overrides (take precedence over media query) */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+.light {
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 body {
@@ -64,3 +75,4 @@ body {
     font-size: 2.1rem;
   }
 }
+
