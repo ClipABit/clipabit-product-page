@@ -22,7 +22,7 @@ export const InteractiveHoverButton = React.forwardRef<
     <Comp
       ref={ref}
       className={cn(
-        'group relative w-28 md:w-32 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
+        'group relative w-28 md:w-32 cursor-pointer overflow-hidden rounded-full bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
         'transition-[transform,opacity] duration-300',
         className,
       )}

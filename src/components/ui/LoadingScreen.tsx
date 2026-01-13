@@ -126,7 +126,7 @@ export default function LoadingScreen() {
                     alt="Play Button"
                     width={86}
                     height={96}
-                    className="w-24 md:w-32 h-auto"
+                    className="w-16 md:w-20 h-auto"
                     priority
                   />
                 </motion.div>
@@ -148,8 +148,8 @@ export default function LoadingScreen() {
                   >
                     {/* Cursor pointer */}
                     <motion.svg
-                      width="24"
-                      height="24"
+                      width="18"
+                      height="18"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -179,19 +179,19 @@ export default function LoadingScreen() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5, duration: 0.4 }}
-              className="mt-12 w-80 md:w-96"
+              className="mt-8 w-64 md:w-80"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                <span className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">
                   Exporting video...
                 </span>
-                <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                <span className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">
                   {Math.round(progress)}%
                 </span>
               </div>
-              <div className="h-2 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
                 <motion.div
-                  className="h-full bg-gradient-to-r from-[#FAAF04] via-[#FF6B35] to-[#FAAF04] rounded-full relative"
+                        className="h-full bg-gradient-to-r from-[#FAAF04] via-[#FAAF04] to-[#FAAF04] rounded-full relative"
                   initial={{ width: '0%' }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.1, ease: 'linear' }}

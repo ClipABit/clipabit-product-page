@@ -18,7 +18,7 @@ function Hero({ }: Props) {
     const { theme } = useTheme();
     return (
         <section>
-            <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-32 md:pt-48 pb-10'>
+            <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-40 md:pt-24 pb-10'>
                 <div className='flex-1 text-center md:text-left'>
                     <div className="line1">
                         <div className="w-full max-w-[1000px] h-[180px] md:h-[240px]">
@@ -47,7 +47,7 @@ function Hero({ }: Props) {
                     </div>
 
                     <div className="line3">
-                            <p className={`hero-subtitle-text ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mt-4`}>
+                            <div className={`hero-subtitle-text ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mt-4`}>
                                 Every{' '}
                                 <AnimatedTextCycle
                                     words={['clip', 'audio', 'face']}
@@ -56,7 +56,7 @@ function Hero({ }: Props) {
                                     style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}
                                 />
                                 , one search away
-                            </p>
+                            </div>
                     </div>
                 </div>
                 <div className='flex-1 flex justify-center items-center mt-10 md:mt-0'>

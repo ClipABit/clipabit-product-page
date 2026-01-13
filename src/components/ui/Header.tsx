@@ -21,14 +21,30 @@ function Header({ }: Props) {
         <header className={`flex items-center justify-between px-8 md:px-16 py-2 bg-[var(--background)] min-h-[60px]`}>
             <div className='flex items-center' >
                 <Link href="/" className={`flex items-center mr-4 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-                    <Image
-                        src={theme === 'dark' ? '/logo.svg' : '/logo-2.svg'}
-                        alt="Logo"
-                        width={250}
-                        height={100}
-                        className="w-20 md:w-[140px] h-auto logo-intro"
-                        style={{ minHeight: '40px' }}
-                    />
+                    <div 
+                        className="logo-intro"
+                        style={{ 
+                            height: '48px', 
+                            width: 'clamp(176px, 22vw, 280px)',
+                            maxWidth: '280px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            position: 'relative'
+                        }}
+                    >
+                        <Image
+                            src={theme === 'dark' ? '/logo.svg' : '/logo-2.svg'}
+                            alt="Logo"
+                            width={280}
+                            height={48}
+                            style={{ 
+                                height: '48px', 
+                                width: '100%',
+                                objectFit: 'contain',
+                                objectPosition: 'left center'
+                            }}
+                        />
+                    </div>
                 </Link>
             </div>
             <div className='flex items-center space-x-4 md:space-x-6'>

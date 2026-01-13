@@ -65,7 +65,7 @@ export default function Content({ }: Props) {
 
         return (
             <section className="flex flex-col items-center justify-center space-y-32 md:space-y-40 px-4 md:px-20 py-10 mt-24">
-            <section ref={howRef} className="w-full flex flex-col md:flex-row items-start gap-8 md:gap-6 mb-16 md:mb-20">
+            <section ref={howRef} className="w-full flex flex-col md:flex-row items-start gap-8 md:gap-6 mb-16 md:mb-20 pt-16 md:pt-24 pb-16 md:pb-24">
                 <div className="w-full md:w-[40%] flex-shrink-0">
                     <h1 className='text-4xl md:text-6xl font-[550] text-black dark:text-white mb-8 text-center md:text-left'>How It Works</h1>
                     
