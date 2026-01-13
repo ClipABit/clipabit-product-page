@@ -150,8 +150,8 @@ export default function Content({ }: Props) {
                         <div className="text-center">
                             <GooeyText
                                 texts={['EFFICIENT.', 'FASTER.', 'SMARTER.', 'AGENTIC.']}
-                                morphTime={1}
-                                cooldownTime={0.25}
+                                morphTime={2}
+                                cooldownTime={0.5}
                                 className="font-extrabold inline-block align-baseline w-[10ch] h-[1.2em]"
                                 textClassName="text-[clamp(2rem,10vw,8rem)] leading-none"
                             />

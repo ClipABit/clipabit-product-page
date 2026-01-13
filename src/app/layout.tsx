@@ -67,9 +67,9 @@ export default function RootLayout({
         <ThemeProvider>
           <LoadingProvider>
             <LoadingScreen />
-            <Header />
-            {children}
-            <Footer />
+          <Header />
+          {children}
+          <Footer />
           </LoadingProvider>
         </ThemeProvider>
       </body>

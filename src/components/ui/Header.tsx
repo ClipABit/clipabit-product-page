@@ -32,9 +32,9 @@ function Header({ }: Props) {
                             position: 'relative'
                         }}
                     >
-                        <Image
-                            src={theme === 'dark' ? '/logo.svg' : '/logo-2.svg'}
-                            alt="Logo"
+                    <Image
+                        src={theme === 'dark' ? '/logo.svg' : '/logo-2.svg'}
+                        alt="Logo"
                             width={280}
                             height={48}
                             style={{ 
