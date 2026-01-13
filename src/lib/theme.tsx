@@ -13,12 +13,13 @@ type ThemeContextValue = {
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 function getInitialTheme(): Theme {
-  // Ensure SSR renders dark to match client default and prevent a mixed first paint
-  if (typeof window === 'undefined') return 'dark';
+  // Always default to light on SSR to match HTML default class
+  if (typeof window === 'undefined') return 'light';
+  // Check localStorage first
   const stored = window.localStorage.getItem('theme');
   if (stored === 'light' || stored === 'dark') return stored;
-  // Default to dark when no stored preference
-  return 'dark';
+  // Default to light (not system preference) to prevent flash
+  return 'light';
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
