@@ -144,14 +144,12 @@ export default function Content({ }: Props) {
                     >
                         <FilmReel />
                     </div>
-                    
-                    {/* Morphing words overlay centered on timeline */}
+                
                     <div className="absolute inset-0 flex items-center justify-center text-black dark:text-white tracking-tight pointer-events-none">
                         <div className="text-center">
                             <GooeyText
                                 texts={['EFFICIENT.', 'FASTER.', 'SMARTER.', 'AGENTIC.']}
-                                morphTime={2}
-                                cooldownTime={0.5}
+                                interval={2000}
                                 className="font-extrabold inline-block align-baseline w-[10ch] h-[1.2em]"
                                 textClassName="text-[clamp(2rem,10vw,8rem)] leading-none"
                             />
