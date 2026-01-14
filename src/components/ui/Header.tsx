@@ -4,7 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link';
 import { useTheme } from '../../lib/theme';
 import { useLoading } from '../../lib/loading-context';
-import { FluidMenu } from './FluidMenu';
+import { LuSun, LuMoon } from 'react-icons/lu';
+import { InteractiveHoverButton } from '../ui/InteractiveHoverButton';
 
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ');
@@ -24,7 +25,7 @@ function Header({ }: Props) {
     };
     
     return (
-        <header className={`flex items-center justify-between px-8 md:px-16 py-2 bg-[var(--background)] min-h-[60px]`}>
+        <header className={`flex items-center justify-between px-8 md:px-16 py-6 bg-[var(--background)] min-h-[60px]`}>
             <div className='flex items-center' >
                 <Link 
                     href="/" 
@@ -57,8 +58,53 @@ function Header({ }: Props) {
                     </div>
                 </Link>
             </div>
-            <div className='flex items-center'>
-                <FluidMenu />
+            <div className='flex items-center space-x-8 md:space-x-12'>
+                <Link href="https://clipabit.streamlit.app" className="whitespace-nowrap">
+                    <InteractiveHoverButton
+                        asChild
+                        text="Demo"
+                        className="text-md md:text-2xl"
+                        // Blue overlay for demo
+                        overlayClassName="bg-[#5AB9F3]"
+                    />
+                </Link>
+                <Link href="#waitlist" className="whitespace-nowrap">
+                    <InteractiveHoverButton
+                        asChild
+                        text="Waitlist"
+                        className="text-md md:text-xl"
+                        // Orange overlay for waitlist
+                        overlayClassName="bg-[#FAAF04]"
+                    />
+                </Link>
+                <div className="hidden md:flex items-center ml-2 md:ml-4">
+                <button
+                    onClick={() => setTheme('light')}
+                    className={cn(
+                        'group relative w-12 h-12 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
+                        'transition-colors duration-300',
+                        'flex items-center justify-center hover:bg-[#FAAF04]'
+                    )}
+                    aria-label="Toggle light mode"
+                >
+                    <span className="relative z-[1] inline-flex items-center justify-center">
+                        <LuSun className="h-5 w-5" />
+                    </span>
+                </button>
+                <button
+                    onClick={() => setTheme('dark')}
+                    className={cn(
+                        'group relative w-12 h-12 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
+                        'transition-colors duration-300',
+                        'flex items-center justify-center ml-2 hover:bg-[#FAAF04]'
+                    )}
+                    aria-label="Toggle dark mode"
+                >
+                    <span className="relative z-[1] inline-flex items-center justify-center">
+                        <LuMoon className="h-5 w-5" />
+                    </span>
+                </button>
+                </div>
             </div>
         </header >
     );

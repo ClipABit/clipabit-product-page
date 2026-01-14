@@ -13,7 +13,7 @@ type Props = {
  * Uses an SVG filter and cross-fades two layers while slightly blurring them.
  */
 export default function GooeyTextMorph({
-  words = ['efficient', 'faster', 'smarter', 'agentic'],
+  words = ['faster', 'smarter', 'easier'],
   intervalMs = 1600,
   className,
 }: Props) {

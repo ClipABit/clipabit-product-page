@@ -30,7 +30,7 @@ function Hero({ }: Props) {
                     </div>
 
                     <div className="line2">
-                        <p className={`hero-subtitle-text ${theme === 'dark' ? 'text-white' : 'text-black'} mt-2`}>
+                        <div className={`hero-subtitle-text ${theme === 'dark' ? 'text-white' : 'text-black'} mt-2`}>
                             Search by{' '}
                             <HoverDefinition word="ideas">
                                 <span className="inline-block font-bold" style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
@@ -43,14 +43,14 @@ function Hero({ }: Props) {
                                     <RedGradientText>timestamps</RedGradientText>
                                 </span>
                             </HoverDefinition>
-                        </p>
+                        </div>
                     </div>
 
                     <div className="line3">
                             <div className={`hero-subtitle-text ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mt-4`}>
                                 Every{' '}
                                 <AnimatedTextCycle
-                                    words={['moment', 'audio', 'person']}
+                                    words={['audio', 'moment', 'person']}
                                     interval={3500}
                                     className="font-bold"
                                     style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}

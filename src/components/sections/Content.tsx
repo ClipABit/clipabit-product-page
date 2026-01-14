@@ -108,13 +108,13 @@ export default function Content({ }: Props) {
                         }}
                         className='text-lg md:text-xl leading-relaxed text-gray-600 dark:text-gray-300 mt-4 max-w-xl text-left'
                     >
-                        Our plug-in has full contextual understanding of your entire video library and works {" "}
+                        Our plug-in works directly in  
                         <HeroHighlight containerClassName="inline-block p-1">
                             <Highlight className="text-black dark:text-white">
-                            directly in DaVinci Resolve {" "}
+                            DaVinci Resolve {" "}
                             </Highlight>
                         </HeroHighlight>{" "}
-                        to find the most relevant clips.
+                        and has full contextual understanding of your entire video library to find the most relevant clips.
                     </motion.div>
                 </div>
                 <div className="w-full md:flex-1 flex justify-start md:justify-start relative">
@@ -148,7 +148,7 @@ export default function Content({ }: Props) {
                     <div className="absolute inset-0 flex items-center justify-center text-black dark:text-white tracking-tight pointer-events-none">
                         <div className="text-center">
                             <GooeyText
-                                texts={['EFFICIENT.', 'FASTER.', 'SMARTER.']}
+                                texts={['FASTER', 'SMARTER', 'EASIER']}
                                 interval={3000}
                                 className="font-extrabold inline-block align-baseline w-[10ch] h-[1.2em]"
                                 textClassName="text-[clamp(2rem,10vw,8rem)] leading-none"
