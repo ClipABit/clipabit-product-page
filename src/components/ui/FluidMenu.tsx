@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { LuSun, LuMoon, LuMenu } from "react-icons/lu"
 import { useTheme } from '../../lib/theme'
 import { InteractiveHoverButton } from './InteractiveHoverButton'
@@ -12,7 +12,12 @@ function cn(...classes: Array<string | false | null | undefined>) {
 
 export function FluidMenu() {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleToggle = () => {
     setIsExpanded(!isExpanded)
@@ -61,10 +66,14 @@ export function FluidMenu() {
             'transition-colors duration-300',
             'flex items-center justify-center hover:bg-[#FAAF04]'
           )}
-          aria-label={theme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode'}
+          aria-label={mounted && theme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode'}
         >
           <span className="relative z-[1] inline-flex items-center justify-center">
-            {theme === 'dark' ? <LuSun className="h-5 w-5" /> : <LuMoon className="h-5 w-5" />}
+            {mounted ? (
+              theme === 'dark' ? <LuSun className="h-5 w-5" /> : <LuMoon className="h-5 w-5" />
+            ) : (
+              <LuMoon className="h-5 w-5" />
+            )}
           </span>
         </button>
       ),

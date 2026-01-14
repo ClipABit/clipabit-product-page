@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link';
 import { useTheme } from '../../lib/theme';
+import { useLoading } from '../../lib/loading-context';
 import { FluidMenu } from './FluidMenu';
 
 function cn(...classes: Array<string | false | null | undefined>) {
@@ -13,13 +14,25 @@ type Props = {}
 
 function Header({ }: Props) {
     const { theme, setTheme } = useTheme();
+    const { setIsLoading } = useLoading();
+    
+    const handleLogoClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    };
     
     return (
         <header className={`flex items-center justify-between px-8 md:px-16 py-2 bg-[var(--background)] min-h-[60px]`}>
             <div className='flex items-center' >
-                <Link href="/" className={`flex items-center mr-4 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
+                <Link 
+                    href="/" 
+                    className={`flex items-center mr-4 ${theme === 'dark' ? 'text-white' : 'text-black'}`}
+                    onClick={handleLogoClick}
+                >
                     <div 
-                        className="logo-intro"
+                        className="logo-intro cursor-pointer"
                         style={{ 
                             height: '48px', 
                             width: 'clamp(176px, 22vw, 280px)',

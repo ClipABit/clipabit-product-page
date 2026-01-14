@@ -8,12 +8,22 @@ import { useLoading } from '../../lib/loading-context';
 
 export default function LoadingScreen() {
   const [isLoading, setIsLoading] = useState(true);
-  const { setIsLoading: setLoadingContext } = useLoading();
+  const { isLoading: contextLoading, setIsLoading: setLoadingContext } = useLoading();
   const [mounted, setMounted] = useState(false);
   const [progress, setProgress] = useState(0);
   const { theme } = useTheme();
 
+  // Start loading animation when context loading becomes true
   useEffect(() => {
+    if (contextLoading) {
+      setIsLoading(true);
+      setProgress(0);
+    }
+  }, [contextLoading]);
+
+  useEffect(() => {
+    if (!isLoading) return;
+
     setMounted(true);
     // Ensure page starts at top
     if (typeof window !== 'undefined') {
@@ -64,7 +74,7 @@ export default function LoadingScreen() {
       clearInterval(progressInterval);
       clearTimeout(completeTimer);
     };
-  }, []);
+  }, [isLoading, setLoadingContext]);
 
   if (!mounted) return null;
 
