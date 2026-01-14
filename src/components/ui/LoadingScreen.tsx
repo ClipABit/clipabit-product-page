@@ -183,7 +183,7 @@ export default function LoadingScreen() {
             >
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">
-                  Exporting video...
+                  Searching through your videos...
                 </span>
                 <span className="text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium">
                   {Math.round(progress)}%

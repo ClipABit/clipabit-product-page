@@ -50,8 +50,8 @@ function Hero({ }: Props) {
                             <div className={`hero-subtitle-text ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mt-4`}>
                                 Every{' '}
                                 <AnimatedTextCycle
-                                    words={['clip', 'audio', 'face']}
-                                    interval={2000}
+                                    words={['moment', 'audio', 'person']}
+                                    interval={3500}
                                     className="font-bold"
                                     style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}
                                 />

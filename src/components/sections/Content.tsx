@@ -69,7 +69,7 @@ export default function Content({ }: Props) {
                 <div className="w-full md:w-[40%] flex-shrink-0">
                     <h1 className='text-4xl md:text-6xl font-[550] text-black dark:text-white mb-8 text-center md:text-left'>How It Works</h1>
                     
-                    <motion.p
+                    <motion.div
                         initial={{
                             opacity: 0,
                             y: 20,
@@ -91,8 +91,8 @@ export default function Content({ }: Props) {
                             </Highlight>
                         </HeroHighlight>{" "}
                         and retrieve specific clips using simple keywords or phrases.
-                    </motion.p>
-                    <motion.p
+                    </motion.div>
+                    <motion.div
                         initial={{
                             opacity: 0,
                             y: 20,
@@ -108,14 +108,14 @@ export default function Content({ }: Props) {
                         }}
                         className='text-lg md:text-xl leading-relaxed text-gray-600 dark:text-gray-300 mt-4 max-w-xl text-left'
                     >
-                        Our plug-in scans your{" "}
+                        Our plug-in has full contextual understanding of your entire video library and works {" "}
                         <HeroHighlight containerClassName="inline-block p-1">
                             <Highlight className="text-black dark:text-white">
-                                entire video library
+                            directly in DaVinci Resolve {" "}
                             </Highlight>
                         </HeroHighlight>{" "}
-                        to find the most relevant segments.
-                    </motion.p>
+                        to find the most relevant clips.
+                    </motion.div>
                 </div>
                 <div className="w-full md:flex-1 flex justify-start md:justify-start relative">
                     <DemoVideo />
@@ -148,8 +148,8 @@ export default function Content({ }: Props) {
                     <div className="absolute inset-0 flex items-center justify-center text-black dark:text-white tracking-tight pointer-events-none">
                         <div className="text-center">
                             <GooeyText
-                                texts={['EFFICIENT.', 'FASTER.', 'SMARTER.', 'AGENTIC.']}
-                                interval={2000}
+                                texts={['EFFICIENT.', 'FASTER.', 'SMARTER.']}
+                                interval={3000}
                                 className="font-extrabold inline-block align-baseline w-[10ch] h-[1.2em]"
                                 textClassName="text-[clamp(2rem,10vw,8rem)] leading-none"
                             />

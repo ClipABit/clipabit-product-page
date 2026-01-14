@@ -47,7 +47,7 @@ export function GooeyText({
           ref={textRef}
           className={cn(
             "inline-block select-none text-center text-6xl md:text-[60pt]",
-            "text-foreground",
+            "bg-gradient-to-r from-yellow-300 via-[#FAAF04] to-yellow-500 bg-clip-text text-transparent",
             textClassName
           )}
         />
