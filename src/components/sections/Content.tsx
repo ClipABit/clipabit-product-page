@@ -183,8 +183,8 @@ export default function Content({ }: Props) {
             </section>
 
             <section id="waitlist" className="w-full flex flex-col items-center justify-center text-center mt-12 md:mt-16">
-                <h2 className={`text-3xl md:text-5xl font-bold ${theme === 'dark' ? 'text-white' : 'text-black'}`}>Early Plug-in Access</h2>
-                <p className={`mb-5 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>Join the waitlist by filling out the form below</p>
+                <h2 className={`text-3xl md:text-5xl font-bold text-black dark:text-white`}>Early Plug-in Access</h2>
+                <p className={`mb-5 text-gray-600 dark:text-gray-300`}>Join the waitlist by filling out the form below</p>
                 {/* <a href="https://clipabit.streamlit.app/search_demo" className="mt-8 px-6 py-3 bg-[#FAAF04] text-black rounded hover:bg-[#e6a800] text-2xl font-semibold">
                     Try the Demo!
                 </a> */}

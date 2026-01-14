@@ -1,7 +1,6 @@
 'use client'; // This directive allows interactivity here
 
 import Button from "../ui/Button";
-import { useTheme } from '../../lib/theme';
 
 export default function GetStartedSection() {
     const onGetStartedClick = () => {
@@ -9,11 +8,10 @@ export default function GetStartedSection() {
         console.log("Get Started button clicked");
     }
 
-    const { theme } = useTheme();
     return (
-        <section className={`flex flex-col items-center mb-20 ${theme === 'dark' ? 'bg-black' : 'bg-white'}`}>
+        <section className={`flex flex-col items-center mb-20 bg-white dark:bg-black`}>
             {/* We use your generic UI Button here */}
-            <Button text={theme === 'dark' ? 'Get Started!' : 'Get Started!'} onClick={onGetStartedClick} />
+            <Button text={'Get Started!'} onClick={onGetStartedClick} />
         </section>
     );
 }

@@ -1,6 +1,5 @@
 'use client'
 import GetStartedSection from './GetStarted'
-import {useTheme} from '../../lib/theme'
 
 import Image from 'next/image'
 import GreenGradientText from '../ui/green-gradient-text'
@@ -15,7 +14,6 @@ import LinkPreview from '../ui/LinkPreview'
 type Props = {}
 
 function Hero({ }: Props) {
-    const { theme } = useTheme();
     return (
         <section>
             <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-40 md:pt-24 pb-10'>
@@ -30,7 +28,7 @@ function Hero({ }: Props) {
                     </div>
 
                     <div className="line2">
-                        <div className={`hero-subtitle-text ${theme === 'dark' ? 'text-white' : 'text-black'} mt-2`}>
+                        <div className={`hero-subtitle-text text-black dark:text-white mt-2`}>
                             Search by{' '}
                             <HoverDefinition word="ideas">
                                 <span className="inline-block font-bold" style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
@@ -47,7 +45,7 @@ function Hero({ }: Props) {
                     </div>
 
                     <div className="line3">
-                            <div className={`hero-subtitle-text ${theme === 'dark' ? 'text-gray-300' : 'text-gray-600'} mt-4`}>
+                            <div className={`hero-subtitle-text text-gray-600 dark:text-gray-300 mt-4`}>
                                 Every{' '}
                                 <AnimatedTextCycle
                                     words={['audio', 'moment', 'person']}
