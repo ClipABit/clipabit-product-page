@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;
@@ -13,20 +14,34 @@
   --animate-scroll: scroll 30s linear infinite;
 
   @keyframes scroll {
-    from {
-      transform: translateX(0);
+    0% {
+      transform: translate3d(0, 0, 0);
     }
-    to {
-      transform: translateX(-50%);
+    100% {
+      transform: translate3d(-50%, 0, 0);
     }
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Ensure smooth, continuous scrolling without pauses */
+.animate-scroll {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  contain: layout style paint;
+  isolation: isolate;
+}
+
+/* Removed @media prefers-color-scheme to prevent flash - theme is controlled by .dark/.light classes only */
+
+/* App-controlled theme overrides (take precedence over media query) */
+.dark {
+  --background: oklch(0.208 0.042 265.755);
+  --foreground: #ededed;
+}
+.light {
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 body {
@@ -34,6 +49,27 @@ body {
   color: var(--foreground);
   font-family: var(--font-clash-display), Arial, Helvetica, sans-serif;
   overflow-x: hidden;
+}
+
+
+/* Intro animation for header logo */
+.logo-intro {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.92) rotate(-2deg);
+  filter: blur(2px);
+  animation: logo-intro 700ms cubic-bezier(0.22, 1, 0.36, 1) 120ms forwards;
+}
+@keyframes logo-intro {
+  60% {
+    opacity: 1;
+    transform: translateY(2px) scale(1.02) rotate(0.5deg);
+    filter: blur(0.4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+    filter: blur(0);
+  }
 }
 
 .test_border {
@@ -49,18 +85,19 @@ body {
 
 @media (min-width: 768px) {
   .hero-title-text {
-    font-size: 10rem;
+    font-size: 9rem;
   }
 }
 
 .hero-subtitle-text {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 400;
   line-height: 1;
 }
 
 @media (min-width: 768px) {
   .hero-subtitle-text {
-    font-size: 2.1rem;
+    font-size: 1.6rem;
   }
 }
+

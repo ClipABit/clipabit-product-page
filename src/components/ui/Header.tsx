@@ -1,44 +1,113 @@
 'use client';
 
-import { useState } from 'react'
-
 import Image from 'next/image'
 import Link from 'next/link';
+import { useTheme } from '../../lib/theme';
+import { useLoading } from '../../lib/loading-context';
+import { LuSun, LuMoon } from 'react-icons/lu';
+import { InteractiveHoverButton } from '../ui/InteractiveHoverButton';
+
+function cn(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(' ');
+}
 
 type Props = {}
 
 function Header({ }: Props) {
-    const [isBrightMode, setIsBrightMode] = useState(true);
-
+    const { theme, setTheme } = useTheme();
+    const { setIsLoading } = useLoading();
+    
+    const handleLogoClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    };
+    
     return (
-        <header className="flex items-center justify-between px-4 py-2 bg-white dark:bg-black">
+        <header className={`flex items-center justify-between px-8 md:px-16 py-6 bg-[var(--background)] min-h-[60px]`}>
             <div className='flex items-center' >
-                <Link href="/" className="flex items-center mr-4">
+                <Link 
+                    href="/" 
+                    className={`flex items-center mr-4 ${theme === 'dark' ? 'text-white' : 'text-black'}`}
+                    onClick={handleLogoClick}
+                >
+                    <div 
+                        className="logo-intro cursor-pointer"
+                        style={{ 
+                            height: '48px', 
+                            width: 'clamp(176px, 22vw, 280px)',
+                            maxWidth: '280px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            position: 'relative'
+                        }}
+                    >
                     <Image
-                        src="/logo.svg"
+                        src={theme === 'dark' ? '/logo.svg' : '/logo-2.svg'}
                         alt="Logo"
-                        width={250}
-                        height={100}
-                        className="w-28 md:w-[180px] h-auto mt-1"
+                            width={280}
+                            height={48}
+                            style={{ 
+                                height: '48px', 
+                                width: '100%',
+                                objectFit: 'contain',
+                                objectPosition: 'left center'
+                            }}
+                        />
+                    </div>
+                </Link>
+            </div>
+            <div className='flex items-center space-x-8 md:space-x-12'>
+                <Link href="https://clipabit.streamlit.app" className="whitespace-nowrap">
+                    <InteractiveHoverButton
+                        asChild
+                        text="Demo"
+                        className="text-md md:text-2xl"
+                        // Blue overlay for demo
+                        overlayClassName="bg-[#5AB9F3]"
                     />
                 </Link>
-            </div>
-            <div className='flex items-center space-x-3 md:space-x-8 mr-2 md:mr-8 justify-end'>
-                <Link 
-                    href="https://clipabit.streamlit.app" 
-                    className="text-md md:text-xl font-semibold text-black dark:text-white hover:text-gray-600 dark:hover:text-gray-300 active:scale-95 transition-all whitespace-nowrap"
-                >
-                    Try the Demo
+                <Link href="#waitlist" className="whitespace-nowrap">
+                    <InteractiveHoverButton
+                        asChild
+                        text="Waitlist"
+                        className="text-md md:text-xl"
+                        // Orange overlay for waitlist
+                        overlayClassName="bg-[#FAAF04]"
+                    />
                 </Link>
-                <Link 
-                    href="#waitlist" 
-                    className="px-2 py-1 md:px-4 md:py-2 text-md md:text-lg bg-[#FAAF04] text-black rounded-lg font-semibold hover:bg-[#e6a800] active:bg-[#cc9600] active:scale-95 transition-all whitespace-nowrap"
+                <div className="hidden md:flex items-center ml-2 md:ml-4">
+                <button
+                    onClick={() => setTheme('light')}
+                    className={cn(
+                        'group relative w-12 h-12 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
+                        'transition-colors duration-300',
+                        'flex items-center justify-center hover:bg-[#FAAF04]'
+                    )}
+                    aria-label="Toggle light mode"
                 >
-                    Join Waitlist
-                </Link>
+                    <span className="relative z-[1] inline-flex items-center justify-center">
+                        <LuSun className="h-5 w-5" />
+                    </span>
+                </button>
+                <button
+                    onClick={() => setTheme('dark')}
+                    className={cn(
+                        'group relative w-12 h-12 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
+                        'transition-colors duration-300',
+                        'flex items-center justify-center ml-2 hover:bg-[#FAAF04]'
+                    )}
+                    aria-label="Toggle dark mode"
+                >
+                    <span className="relative z-[1] inline-flex items-center justify-center">
+                        <LuMoon className="h-5 w-5" />
+                    </span>
+                </button>
+                </div>
             </div>
         </header >
-    )
-}
+    );
+};
 
 export default Header
