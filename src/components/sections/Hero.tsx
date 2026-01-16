@@ -19,7 +19,7 @@ function Hero({ }: Props) {
             <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-40 md:pt-24 pb-10'>
                 <div className='flex-1 text-center md:text-left'>
                     <div className="line1">
-                        <div className="w-full max-w-[1000px] h-[180px] md:h-[240px]">
+                        <div className="w-full max-w-[1000px] h-[180px] md:h-60">
                             <TextHoverEffect
                                 text="ClipABit"
                                 className=""
@@ -57,9 +57,9 @@ function Hero({ }: Props) {
                             </div>
                     </div>
                 </div>
-                <div className='flex-1 flex justify-center items-center mt-10 md:mt-0'>
+                <div className='hidden md:flex flex-1 justify-center items-center mt-10 md:mt-0'>
                     <LinkPreview url="https://www.blackmagicdesign.com/ca/products/davinciresolve/studio">
-                        <DavinciGlow src="/DaVinci_Resolve_Studio 1.svg" width={200} height={200} className="w-40 md:w-[240px] h-auto" />
+                        <DavinciGlow src="/DaVinci_Resolve_Studio 1.svg" width={200} height={200} className="w-40 md:w-60 h-auto" />
                     </LinkPreview>
                 </div>
             </div>

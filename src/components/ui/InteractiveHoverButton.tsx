@@ -22,8 +22,8 @@ export const InteractiveHoverButton = React.forwardRef<
     <Comp
       ref={ref}
       className={cn(
-        'group relative w-28 md:w-32 cursor-pointer overflow-hidden rounded-full bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
-        'transition-[transform,opacity] duration-300',
+        'group relative inline-flex w-auto min-w-[4.5rem] sm:min-w-[6rem] md:min-w-[7.5rem] cursor-pointer overflow-hidden rounded-xl bg-background px-2 py-2 sm:px-4 sm:py-2 text-center font-semibold text-foreground',
+        'items-center justify-center',
         className,
       )}
       {...props}
