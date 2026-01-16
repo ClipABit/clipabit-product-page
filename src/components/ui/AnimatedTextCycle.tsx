@@ -2,6 +2,7 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import type { Variants } from "motion/react";
 
 interface AnimatedTextCycleProps {
   words: string[];
@@ -65,7 +66,7 @@ export default function AnimatedTextCycle({
         ease: "easeIn"
       }
     },
-  };
+  } satisfies Variants;
 
   return (
     <>
