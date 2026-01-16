@@ -2,8 +2,10 @@
 
 import Image from 'next/image'
 import Link from 'next/link';
+import { useTheme } from '../../lib/theme';
 import { useLoading } from '../../lib/loading-context';
-import { FluidMenu } from '../ui/FluidMenu';
+import { LuSun, LuMoon } from 'react-icons/lu';
+import { InteractiveHoverButton } from '../ui/InteractiveHoverButton';
 
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ');
@@ -12,7 +14,8 @@ function cn(...classes: Array<string | false | null | undefined>) {
 type Props = {}
 
 function Header({ }: Props) {
-    const { isLoading, setIsLoading } = useLoading();
+    const { theme, setTheme } = useTheme();
+    const { setIsLoading } = useLoading();
     
     const handleLogoClick = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -22,11 +25,11 @@ function Header({ }: Props) {
     };
     
     return (
-        <header className={`flex items-center justify-between px-8 md:px-16 py-6 bg-[var(--background)] min-h-[60px]`}>
+        <header className={`flex items-center justify-between px-4 sm:px-6 md:px-16 py-6 bg-background min-h-[60px]`}>
             <div className='flex items-center' >
                 <Link 
                     href="/" 
-                    className={`flex items-center mr-4 text-black dark:text-white`}
+                    className={`flex items-center mr-4 ${theme === 'dark' ? 'text-white' : 'text-black'}`}
                     onClick={handleLogoClick}
                 >
                     <div 
@@ -40,26 +43,11 @@ function Header({ }: Props) {
                             position: 'relative'
                         }}
                     >
-                        {/* Render both logos and switch via CSS to avoid hydration mismatch */}
-                        <Image
-                            src="/logo-2.svg"
-                            alt="Logo light"
+                    <Image
+                        src={theme === 'dark' ? '/logo.svg' : '/logo-2.svg'}
+                        alt="Logo"
                             width={280}
                             height={48}
-                            className="block dark:hidden"
-                            style={{ 
-                                height: '48px', 
-                                width: '100%',
-                                objectFit: 'contain',
-                                objectPosition: 'left center'
-                            }}
-                        />
-                        <Image
-                            src="/logo.svg"
-                            alt="Logo dark"
-                            width={280}
-                            height={48}
-                            className="hidden dark:block"
                             style={{ 
                                 height: '48px', 
                                 width: '100%',
@@ -70,9 +58,53 @@ function Header({ }: Props) {
                     </div>
                 </Link>
             </div>
-            <div className='flex items-center'>
-                {/* Hide fluid menu during loading screen to prevent overlap and interactions */}
-                {!isLoading && <FluidMenu />}
+            <div className='flex items-center justify-end gap-2 sm:gap-4 md:gap-8'>
+                <Link href="https://clipabit.streamlit.app" className="whitespace-nowrap">
+                    <InteractiveHoverButton
+                        asChild
+                        text="Demo"
+                        className="text-md md:text-2xl"
+                        // Blue overlay for demo
+                        overlayClassName="bg-[#5AB9F3]"
+                    />
+                </Link>
+                <Link href="#waitlist" className="whitespace-nowrap">
+                    <InteractiveHoverButton
+                        asChild
+                        text="Waitlist"
+                        className="text-md md:text-xl"
+                        // Orange overlay for waitlist
+                        overlayClassName="bg-[#FAAF04]"
+                    />
+                </Link>
+                <div className="hidden md:flex items-center ml-2 md:ml-4">
+                <button
+                    onClick={() => setTheme('light')}
+                    className={cn(
+                        'group relative w-12 h-12 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
+                        'transition-colors duration-300',
+                        'flex items-center justify-center hover:bg-[#FAAF04]'
+                    )}
+                    aria-label="Toggle light mode"
+                >
+                    <span className="relative z-1 inline-flex items-center justify-center">
+                        <LuSun className="h-5 w-5" />
+                    </span>
+                </button>
+                <button
+                    onClick={() => setTheme('dark')}
+                    className={cn(
+                        'group relative w-12 h-12 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
+                        'transition-colors duration-300',
+                        'flex items-center justify-center ml-2 hover:bg-[#FAAF04]'
+                    )}
+                    aria-label="Toggle dark mode"
+                >
+                    <span className="relative z-1 inline-flex items-center justify-center">
+                        <LuMoon className="h-5 w-5" />
+                    </span>
+                </button>
+                </div>
             </div>
         </header >
     );

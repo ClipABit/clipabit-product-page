@@ -66,7 +66,7 @@ export default function Content({ }: Props) {
         return (
             <section className="flex flex-col items-center justify-center space-y-32 md:space-y-40 px-4 md:px-20 py-10 mt-24">
             <section ref={howRef} className="w-full flex flex-col md:flex-row items-start gap-8 md:gap-6 mb-16 md:mb-20 pt-16 md:pt-24 pb-16 md:pb-24">
-                <div className="w-full md:w-[40%] flex-shrink-0">
+                <div className="w-full md:w-[40%] shrink-0">
                     <h1 className='text-4xl md:text-6xl font-[550] text-black dark:text-white mb-8 text-center md:text-left'>How It Works</h1>
                     
                     <motion.div
@@ -82,7 +82,7 @@ export default function Content({ }: Props) {
                             duration: 0.5,
                             ease: [0.4, 0.0, 0.2, 1],
                         }}
-                        className='text-lg md:text-xl leading-relaxed text-gray-600 dark:text-gray-300 mt-4 max-w-xl text-left'
+                        className='text-lg md:text-xl leading-relaxed text-gray-600 dark:text-gray-300 mt-4 max-w-xl text-center md:text-left'
                     >
                         ClipABit uses zero‑shot image‑text matching to analyze video content, enabling users to{" "}
                         <HeroHighlight containerClassName="inline-block p-1">
@@ -106,7 +106,7 @@ export default function Content({ }: Props) {
                             ease: [0.4, 0.0, 0.2, 1],
                             delay: 0.1,
                         }}
-                        className='text-lg md:text-xl leading-relaxed text-gray-600 dark:text-gray-300 mt-4 max-w-xl text-left'
+                        className='text-lg md:text-xl leading-relaxed text-gray-600 dark:text-gray-300 mt-4 max-w-xl text-center md:text-left'
                     >
                         Our plug-in works directly in  
                         <HeroHighlight containerClassName="inline-block p-1">
@@ -117,7 +117,7 @@ export default function Content({ }: Props) {
                         and has full contextual understanding of your entire video library to find the most relevant clips.
                     </motion.div>
                 </div>
-                <div className="w-full md:flex-1 flex justify-start md:justify-start relative">
+                <div className="w-full md:flex-1 flex justify-center md:justify-start relative">
                     <DemoVideo />
                 </div>
             </section>
@@ -190,7 +190,7 @@ export default function Content({ }: Props) {
                 </a> */}
                 {/* Waitlist form is injected via useEffect to prevent hydration errors */}
                 <div className="w-full flex justify-center overflow-hidden" style={{ height: '325px', position: 'relative' }}>
-                    <div ref={waitlistRef} className="w-full max-w-[40rem] h-full" style={{ overflow: 'hidden', clipPath: 'inset(80px 0 80px 0)' }}></div>
+                    <div ref={waitlistRef} className="w-full max-w-160 h-full" style={{ overflow: 'hidden', clipPath: 'inset(80px 0 80px 0)' }}></div>
                 </div>
 
             </section>
