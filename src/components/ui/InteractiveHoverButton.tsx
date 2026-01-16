@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { LuArrowRight } from 'react-icons/lu';
 
 function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ');
@@ -22,7 +21,7 @@ export const InteractiveHoverButton = React.forwardRef<
     <Comp
       ref={ref}
       className={cn(
-        'group relative inline-flex w-auto min-w-[4.5rem] sm:min-w-[6rem] md:min-w-[7.5rem] cursor-pointer overflow-hidden rounded-xl bg-background px-2 py-2 sm:px-4 sm:py-2 text-center font-semibold text-foreground',
+        'group relative inline-flex w-auto cursor-pointer overflow-hidden rounded-xl bg-background px-4 py-2 sm:px-5 text-center font-semibold text-foreground',
         'items-center justify-center',
         className,
       )}
@@ -31,9 +30,8 @@ export const InteractiveHoverButton = React.forwardRef<
       <span className="relative z-[1] inline-block translate-x-1 transition-all duration-300 group-hover:translate-x-12 group-hover:opacity-0">
         {text}
       </span>
-      <div className="absolute top-0 z-10 flex h-full w-full translate-x-12 items-center justify-center gap-2 text-black opacity-0 transition-all duration-300 group-hover:-translate-x-1 group-hover:opacity-100">
+      <div className="absolute top-0 z-10 flex h-full w-full translate-x-12 items-center justify-center text-black opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">
         <span>{text}</span>
-        <LuArrowRight />
       </div>
       <div
         className={cn(
