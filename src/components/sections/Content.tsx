@@ -165,7 +165,6 @@ export default function Content() {
                     ></div>
                 )}
             </section>
-
         </section>
 
     )
