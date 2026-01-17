@@ -16,15 +16,18 @@ export default function LoadingScreen() {
   // Start loading animation when context loading becomes true
   useEffect(() => {
     if (contextLoading) {
-      setIsLoading(true);
-      setProgress(0);
+      const timer = setTimeout(() => {
+        setIsLoading(true);
+        setProgress(0);
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [contextLoading]);
 
   useEffect(() => {
     if (!isLoading) return;
 
-    setMounted(true);
+    setTimeout(() => setMounted(true), 0);
     // Ensure page starts at top
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'instant' });
@@ -91,12 +94,12 @@ export default function LoadingScreen() {
             {/* Magnifying glass animation with play button */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ 
-                scale: 1, 
+              animate={{
+                scale: 1,
                 opacity: 1,
               }}
-              transition={{ 
-                duration: 0.6, 
+              transition={{
+                duration: 0.6,
                 ease: [0.22, 1, 0.36, 1],
               }}
               className="relative flex items-center justify-center"
@@ -140,17 +143,17 @@ export default function LoadingScreen() {
                     priority
                   />
                 </motion.div>
-                
+
                 {/* Cursor that appears and presses the play button when loading completes */}
                 {progress >= 95 && (
                   <motion.div
                     initial={{ opacity: 0, x: -30, y: -30 }}
-                    animate={{ 
+                    animate={{
                       opacity: [0, 1, 1, 0],
                       x: [-30, -5, -5, -30],
                       y: [-30, -5, -5, -30],
                     }}
-                    transition={{ 
+                    transition={{
                       duration: 0.8,
                       ease: 'easeInOut',
                     }}
@@ -201,7 +204,7 @@ export default function LoadingScreen() {
               </div>
               <div className="h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
                 <motion.div
-                        className="h-full bg-gradient-to-r from-[#FAAF04] via-[#FAAF04] to-[#FAAF04] rounded-full relative"
+                  className="h-full bg-gradient-to-r from-[#FAAF04] via-[#FAAF04] to-[#FAAF04] rounded-full relative"
                   initial={{ width: '0%' }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.1, ease: 'linear' }}

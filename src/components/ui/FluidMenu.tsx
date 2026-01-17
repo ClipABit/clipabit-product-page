@@ -16,7 +16,8 @@ export function FluidMenu() {
   const { theme, setTheme } = useTheme()
 
   useEffect(() => {
-    setMounted(true)
+    const timer = setTimeout(() => setMounted(true), 0)
+    return () => clearTimeout(timer)
   }, [])
 
   const handleToggle = () => {
@@ -88,7 +89,7 @@ export function FluidMenu() {
     <div className="relative flex items-center" data-expanded={isExpanded}>
       <div className="relative flex items-center">
         {/* Menu icon trigger */}
-        <div 
+        <div
           className="relative w-16 h-16 cursor-pointer rounded-full group will-change-transform z-50 flex items-center justify-center ml-4 bg-gray-100 dark:bg-gray-800 hover:bg-[#FAAF04] transition-colors duration-300"
           onClick={handleToggle}
         >
@@ -105,7 +106,7 @@ export function FluidMenu() {
           offset += 64 + spacing // Add trigger width (64px) and spacing
 
           return (
-            <div 
+            <div
               key={item.key}
               className="absolute right-0 top-1/2 -translate-y-1/2 will-change-transform"
               style={{

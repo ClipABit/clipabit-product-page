@@ -1,5 +1,4 @@
 'use client'
-import GetStartedSection from './GetStarted'
 
 import Image from 'next/image'
 import GreenGradientText from '../ui/green-gradient-text'
@@ -7,19 +6,17 @@ import RedGradientText from '../ui/red-gradient-text'
 import AnimatedTextCycle from '../ui/AnimatedTextCycle'
 import { TextHoverEffect } from '../ui/text-hover-effect'
 import DavinciGlow from '../ui/DavinciGlow'
-import { GooeyText } from '../ui/gooey-text-morphing'
 import HoverDefinition from '../ui/HoverDefinition'
 import LinkPreview from '../ui/LinkPreview'
 
-type Props = {}
 
-function Hero({ }: Props) {
+function Hero() {
     return (
         <section>
             <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-40 md:pt-24 pb-10'>
                 <div className='flex-1 text-center md:text-left'>
                     <div className="line1">
-                        <div className="w-full max-w-[1000px] h-[180px] md:h-60">
+                        <div className="h-[180px] md:h-60">
                             <TextHoverEffect
                                 text="ClipABit"
                                 className=""
@@ -27,7 +24,7 @@ function Hero({ }: Props) {
                         </div>
                     </div>
 
-                    <div className="line2">
+                    <div className="line2 pl-[10%]">
                         <div className={`hero-subtitle-text text-black dark:text-white mt-2`}>
                             Search by{' '}
                             <HoverDefinition word="ideas">
@@ -44,17 +41,17 @@ function Hero({ }: Props) {
                         </div>
                     </div>
 
-                    <div className="line3">
-                            <div className={`hero-subtitle-text text-gray-600 dark:text-gray-300 mt-4`}>
-                                Every{' '}
-                                <AnimatedTextCycle
-                                    words={['audio', 'moment', 'person']}
-                                    interval={3500}
-                                    className="font-bold"
-                                    style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}
-                                />
-                                , one search away
-                            </div>
+                    <div className="line3 pl-[10%]">
+                        <div className={`hero-subtitle-text text-gray-600 dark:text-gray-300 mt-4`}>
+                            Every{' '}
+                            <AnimatedTextCycle
+                                words={['audio', 'moment', 'person']}
+                                interval={3500}
+                                className="font-bold"
+                                style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}
+                            />
+                            , one search away
+                        </div>
                     </div>
                 </div>
                 <div className='hidden md:flex flex-1 justify-center items-center mt-10 md:mt-0'>

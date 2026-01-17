@@ -1,10 +1,6 @@
 'use client'
-import React from 'react'
-import { useTheme } from '../../lib/theme'
 
-type Props = {}
-
-function Footer({ }: Props) {
+function Footer() {
     return (
         <footer className={`flex items-center justify-center p-4 bg-[var(--background)]`}>
             <div className="flex items-center gap-2">
