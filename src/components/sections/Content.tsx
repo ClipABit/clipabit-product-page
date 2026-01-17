@@ -183,8 +183,8 @@ export default function Content({ }: Props) {
             </section>
 
             <section id="waitlist" className="w-full flex flex-col items-center justify-center text-center mt-12 md:mt-16">
-                <h2 className={`text-3xl md:text-5xl font-bold text-black dark:text-white`}>Early Plug-in Access</h2>
-                <p className={`mb-5 text-gray-600 dark:text-gray-300`}>Join the waitlist by filling out the form below</p>
+                <h2 className={`text-3xl md:text-5xl font-bold text-black dark:text-white`}>Join the Waitlist</h2>
+                <p className={`mb-5 text-gray-600 dark:text-gray-300`}>Sign up to get early access to the ClipABit plugin</p>
                 {/* <a href="https://clipabit.streamlit.app/search_demo" className="mt-8 px-6 py-3 bg-[#FAAF04] text-black rounded hover:bg-[#e6a800] text-2xl font-semibold">
                     Try the Demo!
                 </a> */}
@@ -192,9 +192,7 @@ export default function Content({ }: Props) {
                 <div className="w-full flex justify-center overflow-hidden" style={{ height: '325px', position: 'relative' }}>
                     <div ref={waitlistRef} className="w-full max-w-160 h-full" style={{ overflow: 'hidden', clipPath: 'inset(80px 0 80px 0)' }}></div>
                 </div>
-
             </section>
-
         </section>
 
     )
