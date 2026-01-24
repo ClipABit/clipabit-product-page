@@ -1,27 +1,43 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
-import { LuSun, LuMoon, LuMenu } from "react-icons/lu"
+import { useState, useEffect } from "react"
+import { LuSun, LuMoon } from "react-icons/lu"
+import { motion, AnimatePresence, type Variants } from "motion/react"
 import { useTheme } from '../../lib/theme'
-import { InteractiveHoverButton } from './InteractiveHoverButton'
 import Link from 'next/link'
+import { User } from 'firebase/auth'
 
-function cn(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(' ')
+interface FluidMenuProps {
+  user: User | null | undefined
 }
 
-export function FluidMenu() {
-  const [isExpanded, setIsExpanded] = useState(false)
+export function FluidMenu({ user }: FluidMenuProps) {
+  const [isOpen, setIsOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
 
   useEffect(() => {
-    const timer = setTimeout(() => setMounted(true), 0)
-    return () => clearTimeout(timer)
+    setMounted(true)
   }, [])
 
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
   const handleToggle = () => {
-    setIsExpanded(!isExpanded)
+    setIsOpen(!isOpen)
+  }
+
+  const handleClose = () => {
+    setIsOpen(false)
   }
 
   const handleThemeToggle = () => {
@@ -31,101 +47,181 @@ export function FluidMenu() {
   const menuItems = [
     {
       key: 'demo',
-      content: (
-        <Link href="https://clipabit.streamlit.app" className="whitespace-nowrap">
-          <InteractiveHoverButton
-            asChild
-            text="Demo"
-            className="text-md md:text-xl"
-            overlayClassName="bg-[#5AB9F3]"
-          />
-        </Link>
-      ),
-      width: 112, // w-28 = 7rem = 112px
+      label: 'Demo',
+      href: 'https://clipabit.streamlit.app',
+      color: '#5AB9F3',
     },
     {
       key: 'waitlist',
-      content: (
-        <Link href="#waitlist" className="whitespace-nowrap">
-          <InteractiveHoverButton
-            asChild
-            text="Waitlist"
-            className="text-md md:text-lg"
-            overlayClassName="bg-[#FAAF04]"
-          />
-        </Link>
-      ),
-      width: 112, // w-28 = 7rem = 112px
+      label: 'Waitlist',
+      href: '/#waitlist',
+      color: '#FAAF04',
     },
     {
-      key: 'theme',
-      content: (
-        <button
-          onClick={handleThemeToggle}
-          className={cn(
-            'group relative w-12 h-12 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
-            'transition-colors duration-300',
-            'flex items-center justify-center hover:bg-[#FAAF04]'
-          )}
-          aria-label={mounted && theme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode'}
-        >
-          <span className="relative z-[1] inline-flex items-center justify-center">
-            {mounted ? (
-              theme === 'dark' ? <LuSun className="h-5 w-5" /> : <LuMoon className="h-5 w-5" />
-            ) : (
-              <LuMoon className="h-5 w-5" />
-            )}
-          </span>
-        </button>
-      ),
-      width: 48, // w-12 = 3rem = 48px
+      key: 'support',
+      label: 'Support Us!',
+      href: 'https://gofund.me/e67494308',
+      color: '#B37FEB',
+    },
+    {
+      key: 'auth',
+      label: user ? 'Dashboard' : 'Sign In',
+      href: user ? '/dashboard' : '/sign-in',
+      color: '#FAAF04',
     },
   ]
 
-  // Calculate spacing between items
-  const spacing = 16 // 1rem = 16px (space-x-4)
+  // Animation variants
+  const menuVariants: Variants = {
+    closed: {
+      opacity: 0,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+      }
+    },
+    open: {
+      opacity: 1,
+      transition: {
+        duration: 0.3,
+        ease: "easeInOut",
+      }
+    }
+  }
+
+  const itemVariants: Variants = {
+    closed: {
+      opacity: 0,
+      y: 20,
+      transition: {
+        duration: 0.2,
+      }
+    },
+    open: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.4,
+        delay: i * 0.1,
+        ease: "easeOut",
+      }
+    })
+  }
 
   return (
-    <div className="relative flex items-center" data-expanded={isExpanded}>
-      <div className="relative flex items-center">
-        {/* Menu icon trigger */}
-        <div
-          className="relative w-16 h-16 cursor-pointer rounded-full group will-change-transform z-50 flex items-center justify-center ml-4 bg-gray-100 dark:bg-gray-800 hover:bg-[#FAAF04] transition-colors duration-300"
-          onClick={handleToggle}
-        >
-          <LuMenu className="h-6 w-6 text-gray-600 dark:text-gray-300 group-hover:text-black transition-colors duration-300" />
+    <>
+      {/* Hamburger Button */}
+      <button
+        onClick={handleToggle}
+        className="relative z-50 w-12 h-12 flex items-center justify-center rounded-full bg-foreground/10 hover:bg-[#FAAF04] transition-colors duration-300"
+        aria-label={isOpen ? 'Close menu' : 'Open menu'}
+      >
+        <div className="w-5 h-4 relative flex flex-col justify-between">
+          <motion.span
+            className="w-full h-0.5 bg-foreground rounded-full origin-center"
+            animate={isOpen ? { rotate: 45, y: 7 } : { rotate: 0, y: 0 }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+          />
+          <motion.span
+            className="w-full h-0.5 bg-foreground rounded-full"
+            animate={isOpen ? { opacity: 0, scaleX: 0 } : { opacity: 1, scaleX: 1 }}
+            transition={{ duration: 0.2 }}
+          />
+          <motion.span
+            className="w-full h-0.5 bg-foreground rounded-full origin-center"
+            animate={isOpen ? { rotate: -45, y: -7 } : { rotate: 0, y: 0 }}
+            transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+          />
         </div>
+      </button>
 
-        {/* Other items - expand to the left */}
-        {menuItems.map((item, index) => {
-          // Calculate cumulative width for positioning
-          let offset = 0
-          for (let i = 0; i < index; i++) {
-            offset += menuItems[i].width + spacing
-          }
-          offset += 64 + spacing // Add trigger width (64px) and spacing
+      {/* Full Screen Menu Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            className="fixed inset-0 z-40"
+            initial="closed"
+            animate="open"
+            exit="closed"
+            variants={menuVariants}
+          >
+            {/* Backdrop */}
+            <motion.div
+              className="absolute inset-0 bg-background/95 backdrop-blur-md"
+              onClick={handleClose}
+            />
 
-          return (
-            <div
-              key={item.key}
-              className="absolute right-0 top-1/2 -translate-y-1/2 will-change-transform"
-              style={{
-                transform: `translateX(${isExpanded ? -offset : 0}px)`,
-                opacity: isExpanded ? 1 : 0,
-                zIndex: 40 - index,
-                transition: `transform ${isExpanded ? '300ms' : '300ms'} cubic-bezier(0.4, 0, 0.2, 1),
-                           opacity ${isExpanded ? '300ms' : '350ms'}`,
-                backfaceVisibility: 'hidden',
-                perspective: 1000,
-                WebkitFontSmoothing: 'antialiased',
-                pointerEvents: isExpanded ? 'auto' : 'none'
-              }}
-            >
-              {item.content}
+            {/* Menu Content */}
+            <div className="relative h-full flex flex-col items-center justify-center px-8">
+              {/* Menu Items */}
+              <nav className="flex flex-col items-center gap-8">
+                {menuItems.map((item, index) => (
+                  <motion.div
+                    key={item.key}
+                    custom={index}
+                    variants={itemVariants}
+                    initial="closed"
+                    animate="open"
+                    exit="closed"
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={handleClose}
+                      className="block text-2xl font-medium text-foreground/80 hover:text-foreground transition-colors duration-200"
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ))}
+
+                {/* Subtle separator */}
+                <motion.div
+                  custom={menuItems.length}
+                  variants={itemVariants}
+                  initial="closed"
+                  animate="open"
+                  exit="closed"
+                  className="w-12 h-px bg-foreground/10"
+                />
+
+                {/* Theme Toggle */}
+                <motion.div
+                  custom={menuItems.length + 1}
+                  variants={itemVariants}
+                  initial="closed"
+                  animate="open"
+                  exit="closed"
+                >
+                  <button
+                    onClick={handleThemeToggle}
+                    className="flex items-center gap-2 text-lg text-foreground/60 hover:text-foreground transition-colors duration-200"
+                    aria-label={mounted && theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                  >
+                    {mounted ? (
+                      theme === 'dark' ? (
+                        <>
+                          <LuSun className="h-5 w-5" />
+                          <span>Light Mode</span>
+                        </>
+                      ) : (
+                        <>
+                          <LuMoon className="h-5 w-5" />
+                          <span>Dark Mode</span>
+                        </>
+                      )
+                    ) : (
+                      <>
+                        <LuMoon className="h-5 w-5" />
+                        <span>Theme</span>
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+              </nav>
             </div>
-          )
-        })}
-      </div>
-    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   )
 }

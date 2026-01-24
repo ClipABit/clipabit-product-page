@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
@@ -10,15 +11,12 @@ import {
     AuthError
 } from 'firebase/auth';
 import { auth } from '@/src/lib/firebase';
-
-interface SignInModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
+import { useAuthState } from '@/src/lib/hooks/firebase';
+import { useTheme } from '@/src/lib/theme';
 
 type AuthMode = 'signin' | 'signup' | 'forgot-password';
 
-export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
+export default function SignIn() {
     const [mode, setMode] = useState<AuthMode>('signin');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -26,6 +24,9 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
+    const router = useRouter();
+    const user = useAuthState(auth);
+    const { theme } = useTheme();
 
     const resetForm = () => {
         setEmail('');
@@ -46,7 +47,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         try {
             const provider = new GoogleAuthProvider();
             await signInWithPopup(auth, provider);
-            onClose();
+            router.push('/dashboard');
         } catch (err) {
             const authError = err as AuthError;
             setError(authError.message || 'Failed to sign in with Google');
@@ -62,7 +63,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            onClose();
+            router.push('/dashboard');
         } catch (err) {
             const authError = err as AuthError;
             setError(getErrorMessage(authError.code));
@@ -90,7 +91,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
 
         try {
             await createUserWithEmailAndPassword(auth, email, password);
-            onClose();
+            router.push('/dashboard');
         } catch (err) {
             const authError = err as AuthError;
             setError(getErrorMessage(authError.code));
@@ -137,19 +138,10 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         }
     };
 
-    if (!isOpen) return null;
-
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-            {/* Backdrop */}
-            <div
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                onClick={onClose}
-            />
-
-            {/* Modal */}
-            <div className="relative z-10 w-full max-w-md mx-4 animate-in fade-in zoom-in duration-200">
-                <div className="bg-[#1a1a1a] rounded-2xl shadow-2xl border border-white/10 overflow-hidden">
+        <div className="min-h-screen bg-background flex items-center justify-center px-4">
+            <div className="w-full max-w-md">
+                <div className="bg-foreground/5 rounded-2xl shadow-2xl border border-foreground/10 overflow-hidden">
                     {/* Header */}
                     <div className="px-8 pt-8 pb-6 text-center">
                         <div className="flex justify-center mb-4">
@@ -169,12 +161,12 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                 </svg>
                             </div>
                         </div>
-                        <h2 className="text-2xl font-bold text-white">
+                        <h2 className="text-2xl font-bold text-foreground">
                             {mode === 'signin' && 'Welcome back'}
                             {mode === 'signup' && 'Create your account'}
                             {mode === 'forgot-password' && 'Reset your password'}
                         </h2>
-                        <p className="text-gray-400 mt-2 text-sm">
+                        <p className="text-foreground/60 mt-2 text-sm">
                             {mode === 'signin' && 'Sign in to continue to Clipabit'}
                             {mode === 'signup' && 'Get started with Clipabit'}
                             {mode === 'forgot-password' && "We'll send you a reset link"}
@@ -189,7 +181,11 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                 <button
                                     onClick={handleGoogleSignIn}
                                     disabled={loading}
-                                    className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white hover:bg-gray-100 text-gray-800 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className={`w-full flex items-center justify-center gap-3 px-4 py-3 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
+                                        theme === 'dark'
+                                            ? 'bg-white hover:bg-gray-100 text-gray-800'
+                                            : 'bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/20'
+                                    }`}
                                 >
                                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                                         <path
@@ -215,10 +211,10 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                 {/* Divider */}
                                 <div className="relative my-6">
                                     <div className="absolute inset-0 flex items-center">
-                                        <div className="w-full border-t border-white/10"></div>
+                                        <div className="w-full border-t border-foreground/10"></div>
                                     </div>
                                     <div className="relative flex justify-center text-sm">
-                                        <span className="px-4 bg-[#1a1a1a] text-gray-500">or continue with email</span>
+                                        <span className="px-4 bg-foreground/5 text-foreground/50">or continue with email</span>
                                     </div>
                                 </div>
                             </>
@@ -242,7 +238,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                         {mode === 'signin' && (
                             <form onSubmit={handleEmailSignIn} className="space-y-4">
                                 <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label htmlFor="email" className="block text-sm font-medium text-foreground/70 mb-2">
                                         Email
                                     </label>
                                     <input
@@ -250,13 +246,13 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        className="w-full px-4 py-3 bg-foreground/5 border border-foreground/10 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                         placeholder="Enter your email"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label htmlFor="password" className="block text-sm font-medium text-foreground/70 mb-2">
                                         Password
                                     </label>
                                     <input
@@ -264,7 +260,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        className="w-full px-4 py-3 bg-foreground/5 border border-foreground/10 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                         placeholder="Enter your password"
                                         required
                                     />
@@ -292,7 +288,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                         {mode === 'signup' && (
                             <form onSubmit={handleEmailSignUp} className="space-y-4">
                                 <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label htmlFor="email" className="block text-sm font-medium text-foreground/70 mb-2">
                                         Email
                                     </label>
                                     <input
@@ -300,13 +296,13 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        className="w-full px-4 py-3 bg-foreground/5 border border-foreground/10 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                         placeholder="Enter your email"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label htmlFor="password" className="block text-sm font-medium text-foreground/70 mb-2">
                                         Password
                                     </label>
                                     <input
@@ -314,13 +310,13 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        className="w-full px-4 py-3 bg-foreground/5 border border-foreground/10 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                         placeholder="Create a password"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label htmlFor="confirmPassword" className="block text-sm font-medium text-foreground/70 mb-2">
                                         Confirm Password
                                     </label>
                                     <input
@@ -328,7 +324,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                         type="password"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        className="w-full px-4 py-3 bg-foreground/5 border border-foreground/10 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                         placeholder="Confirm your password"
                                         required
                                     />
@@ -347,7 +343,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                         {mode === 'forgot-password' && (
                             <form onSubmit={handleForgotPassword} className="space-y-4">
                                 <div>
-                                    <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                                    <label htmlFor="email" className="block text-sm font-medium text-foreground/70 mb-2">
                                         Email
                                     </label>
                                     <input
@@ -355,7 +351,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                        className="w-full px-4 py-3 bg-foreground/5 border border-foreground/10 rounded-lg text-foreground placeholder-foreground/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                         placeholder="Enter your email"
                                         required
                                     />
@@ -373,7 +369,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                         {/* Footer Links */}
                         <div className="mt-6 text-center">
                             {mode === 'signin' && (
-                                <p className="text-gray-400 text-sm">
+                                <p className="text-foreground/60 text-sm">
                                     Don&apos;t have an account?{' '}
                                     <button
                                         onClick={() => handleModeChange('signup')}
@@ -384,7 +380,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                 </p>
                             )}
                             {mode === 'signup' && (
-                                <p className="text-gray-400 text-sm">
+                                <p className="text-foreground/60 text-sm">
                                     Already have an account?{' '}
                                     <button
                                         onClick={() => handleModeChange('signin')}
@@ -395,7 +391,7 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                 </p>
                             )}
                             {mode === 'forgot-password' && (
-                                <p className="text-gray-400 text-sm">
+                                <p className="text-foreground/60 text-sm">
                                     Remember your password?{' '}
                                     <button
                                         onClick={() => handleModeChange('signin')}
@@ -406,17 +402,17 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
                                 </p>
                             )}
                         </div>
-                    </div>
 
-                    {/* Close Button */}
-                    <button
-                        onClick={onClose}
-                        className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/5"
-                    >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                        {/* Back to Home */}
+                        <div className="mt-4 text-center">
+                            <button
+                                onClick={() => router.push('/')}
+                                className="text-sm text-foreground/50 hover:text-foreground/70 transition-colors"
+                            >
+                                Back to home
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
