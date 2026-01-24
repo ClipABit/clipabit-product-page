@@ -10,6 +10,7 @@ export default function Dashboard() {
     const user = useAuthState(auth);
     const [showModal, setShowModal] = useState(true);
 
+    // Sign out handler
     const handleSignOut = async () => {
         try {
             await signOut(auth);
