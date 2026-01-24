@@ -60,11 +60,16 @@ export default function Dashboard() {
                     </div>
                 </div>
             </header>
-            <main className="max-w-7xl mx-auto px-6 py-8">
+            <main className="max-w-7xl mx-auto px-6 py-8 flex flex-col gap-4">
                 <div className="bg-foreground/5 border border-foreground/10 rounded-xl p-6">
                     <h2 className="text-lg font-semibold text-foreground mb-2">Welcome back!</h2>
                     <p className="text-foreground/60">
                         You&apos;re signed in as <span className="text-foreground">{user.email}</span>
+                    </p>
+                </div>
+                <div className="text-center p-6">
+                    <p className="text-foreground">
+                    Keep an eye out... ClipABit is launching really soon! 👀
                     </p>
                 </div>
             </main>

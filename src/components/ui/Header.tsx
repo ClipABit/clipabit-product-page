@@ -68,7 +68,7 @@ function Header({ }: Props) {
                     <InteractiveHoverButton
                         asChild
                         text="Demo"
-                        className="text-md md:text-2xl"
+                        className="text-md md:text-xl"
                         // Blue overlay for demo
                         overlayClassName="bg-[#5AB9F3]"
                     />
@@ -91,6 +91,7 @@ function Header({ }: Props) {
                         overlayClassName="bg-[#FAAF04]"
                     />
                 </Link> */}
+                {/* TODO: Use fluid menu in mobile */}
                 <Link href="https://gofund.me/e67494308" className="whitespace-nowrap hidden md:block">
                     <InteractiveHoverButton
                         asChild
