@@ -6,8 +6,10 @@ const firebaseConfig = JSON.parse(
   process.env.NEXT_PUBLIC_FIREBASE_CONFIG || '{}'
 );
 
+console.log('Firebase Config:', firebaseConfig);
+
 // Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const app = initializeApp(firebaseConfig); 
 const auth = getAuth(app);
 
 export { app, auth };
