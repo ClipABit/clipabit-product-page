@@ -27,6 +27,18 @@ export function FluidMenu({ user }: FluidMenuProps) {
     }
   }, [isOpen])
 
+  // Handle keyboard events for accessibility
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen) {
+        handleClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isOpen])
+
   const handleToggle = () => {
     setIsOpen(!isOpen)
   }
@@ -44,25 +56,21 @@ export function FluidMenu({ user }: FluidMenuProps) {
       key: 'demo',
       label: 'Demo',
       href: 'https://clipabit.streamlit.app',
-      color: '#5AB9F3',
     },
     {
       key: 'waitlist',
       label: 'Waitlist',
       href: '/#waitlist',
-      color: '#FAAF04',
     },
     {
       key: 'support',
       label: 'Support Us!',
       href: 'https://gofund.me/e67494308',
-      color: '#B37FEB',
     },
     {
       key: 'auth',
       label: user ? 'Dashboard' : 'Sign In',
       href: user ? '/dashboard' : '/sign-in',
-      color: '#FAAF04',
     },
   ]
 
@@ -144,6 +152,15 @@ export function FluidMenu({ user }: FluidMenuProps) {
             <motion.div
               className="absolute inset-0 bg-background/95 backdrop-blur-md"
               onClick={handleClose}
+              tabIndex={0}
+              role="button"
+              aria-label="Close menu"
+              onKeyDown={(event) => {
+                if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault()
+                  handleClose()
+                }
+              }}
             />
 
             {/* Menu Content */}

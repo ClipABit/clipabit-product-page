@@ -13,15 +13,11 @@ export default function Dashboard() {
 
     // Redirect to sign-in if not authenticated
     useEffect(() => {
-        // Add a small delay to ensure auth state is stable after navigation
-        const timer = setTimeout(() => {
-            if (user === null && !isRedirecting) {
-                setIsRedirecting(true);
-                router.push('/sign-in');
-            }
-        }, 500);
-
-        return () => clearTimeout(timer);
+        // Only redirect if user is explicitly null (not undefined which means loading)
+        if (user === null && !isRedirecting) {
+            setIsRedirecting(true);
+            router.push('/sign-in');
+        }
     }, [user, router, isRedirecting]);
 
     // Sign out handler
