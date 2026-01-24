@@ -13,12 +13,7 @@ interface FluidMenuProps {
 
 export function FluidMenu({ user }: FluidMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
   const { theme, setTheme } = useTheme()
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -195,24 +190,17 @@ export function FluidMenu({ user }: FluidMenuProps) {
                   <button
                     onClick={handleThemeToggle}
                     className="flex items-center gap-2 text-lg text-foreground/60 hover:text-foreground transition-colors duration-200"
-                    aria-label={mounted && theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                    aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
                   >
-                    {mounted ? (
-                      theme === 'dark' ? (
-                        <>
-                          <LuSun className="h-5 w-5" />
-                          <span>Light Mode</span>
-                        </>
-                      ) : (
-                        <>
-                          <LuMoon className="h-5 w-5" />
-                          <span>Dark Mode</span>
-                        </>
-                      )
+                    {theme === 'dark' ? (
+                      <>
+                        <LuSun className="h-5 w-5" />
+                        <span>Light Mode</span>
+                      </>
                     ) : (
                       <>
                         <LuMoon className="h-5 w-5" />
-                        <span>Theme</span>
+                        <span>Dark Mode</span>
                       </>
                     )}
                   </button>

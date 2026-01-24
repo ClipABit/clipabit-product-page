@@ -10,18 +10,9 @@ export default function Dashboard() {
     const user = useAuthState(auth);
     const router = useRouter();
     const [isRedirecting, setIsRedirecting] = useState(false);
-    const [mounted, setMounted] = useState(false);
-
-    // Wait for component to mount
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     // Redirect to sign-in if not authenticated
     useEffect(() => {
-        // Only check after component is mounted and give auth state time to stabilize
-        if (!mounted) return;
-
         // Add a small delay to ensure auth state is stable after navigation
         const timer = setTimeout(() => {
             if (user === null && !isRedirecting) {
@@ -31,7 +22,7 @@ export default function Dashboard() {
         }, 500);
 
         return () => clearTimeout(timer);
-    }, [user, router, isRedirecting, mounted]);
+    }, [user, router, isRedirecting]);
 
     // Sign out handler
     const handleSignOut = async () => {

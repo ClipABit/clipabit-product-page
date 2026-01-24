@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
     signInWithEmailAndPassword,
@@ -11,7 +11,6 @@ import {
     AuthError
 } from 'firebase/auth';
 import { auth } from '@/src/lib/firebase';
-import { useAuthState } from '@/src/lib/hooks/firebase';
 import { useTheme } from '@/src/lib/theme';
 
 type AuthMode = 'signin' | 'signup' | 'forgot-password';
@@ -25,7 +24,6 @@ export default function SignIn() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const router = useRouter();
-    const user = useAuthState(auth);
     const { theme } = useTheme();
 
     const resetForm = () => {
