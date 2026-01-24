@@ -6,10 +6,10 @@ import {
     createUserWithEmailAndPassword,
     signInWithPopup,
     GoogleAuthProvider,
-    sendPasswordResetEmail
+    sendPasswordResetEmail,
+    AuthError
 } from 'firebase/auth';
 import { auth } from '@/src/lib/firebase';
-import { useTheme } from '@/src/lib/theme';
 
 interface SignInModalProps {
     isOpen: boolean;
@@ -26,7 +26,6 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
-    const { theme } = useTheme();
 
     const resetForm = () => {
         setEmail('');
@@ -48,8 +47,9 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
             const provider = new GoogleAuthProvider();
             await signInWithPopup(auth, provider);
             onClose();
-        } catch (err: any) {
-            setError(err.message || 'Failed to sign in with Google');
+        } catch (err) {
+            const authError = err as AuthError;
+            setError(authError.message || 'Failed to sign in with Google');
         } finally {
             setLoading(false);
         }
@@ -63,8 +63,9 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         try {
             await signInWithEmailAndPassword(auth, email, password);
             onClose();
-        } catch (err: any) {
-            setError(getErrorMessage(err.code));
+        } catch (err) {
+            const authError = err as AuthError;
+            setError(getErrorMessage(authError.code));
         } finally {
             setLoading(false);
         }
@@ -90,8 +91,9 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             onClose();
-        } catch (err: any) {
-            setError(getErrorMessage(err.code));
+        } catch (err) {
+            const authError = err as AuthError;
+            setError(getErrorMessage(authError.code));
         } finally {
             setLoading(false);
         }
@@ -106,8 +108,9 @@ export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
         try {
             await sendPasswordResetEmail(auth, email);
             setMessage('Password reset email sent! Check your inbox.');
-        } catch (err: any) {
-            setError(getErrorMessage(err.code));
+        } catch (err) {
+            const authError = err as AuthError;
+            setError(getErrorMessage(authError.code));
         } finally {
             setLoading(false);
         }
