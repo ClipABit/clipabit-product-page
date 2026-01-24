@@ -73,7 +73,16 @@ function Header({ }: Props) {
                         overlayClassName="bg-[#5AB9F3]"
                     />
                 </Link>
-                <Link href="#waitlist" className="whitespace-nowrap">
+                <Link href="/dashboard" className="whitespace-nowrap">
+                    <InteractiveHoverButton
+                        asChild
+                        text="Sign In"
+                        className="text-md md:text-xl"
+                        // Orange overlay for waitlist
+                        overlayClassName="bg-[#FAAF04]"
+                    />
+                </Link>
+                {/* <Link href="/demo" className="whitespace-nowrap">
                     <InteractiveHoverButton
                         asChild
                         text="Waitlist"
@@ -81,7 +90,7 @@ function Header({ }: Props) {
                         // Orange overlay for waitlist
                         overlayClassName="bg-[#FAAF04]"
                     />
-                </Link>
+                </Link> */}
                 <Link href="https://gofund.me/e67494308" className="whitespace-nowrap hidden md:block">
                     <InteractiveHoverButton
                         asChild
@@ -112,7 +121,6 @@ function Header({ }: Props) {
                             </span>)
                         }
                     </button>
-
                 </div>
             </div>
         </header >
