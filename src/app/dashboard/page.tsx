@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/src/lib/firebase';
 import { useAuthState } from '@/src/lib/hooks/firebase';
@@ -9,16 +9,16 @@ import { signOut } from 'firebase/auth';
 export default function Dashboard() {
     const user = useAuthState(auth);
     const router = useRouter();
-    const [isRedirecting, setIsRedirecting] = useState(false);
+    const hasRedirected = useRef(false);
 
     // Redirect to sign-in if not authenticated
     useEffect(() => {
         // Only redirect if user is explicitly null (not undefined which means loading)
-        if (user === null && !isRedirecting) {
-            setIsRedirecting(true);
+        if (user === null && !hasRedirected.current) {
+            hasRedirected.current = true;
             router.push('/sign-in');
         }
-    }, [user, router, isRedirecting]);
+    }, [user, router]);
 
     // Sign out handler
     const handleSignOut = async () => {

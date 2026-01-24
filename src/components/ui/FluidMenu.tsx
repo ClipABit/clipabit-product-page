@@ -15,6 +15,14 @@ export function FluidMenu({ user }: FluidMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { theme, setTheme } = useTheme()
 
+  const handleToggle = () => {
+    setIsOpen(!isOpen)
+  }
+
+  const handleClose = () => {
+    setIsOpen(false)
+  }
+
   // Prevent body scroll when menu is open
   useEffect(() => {
     if (isOpen) {
@@ -38,14 +46,6 @@ export function FluidMenu({ user }: FluidMenuProps) {
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen])
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen)
-  }
-
-  const handleClose = () => {
-    setIsOpen(false)
-  }
 
   const handleThemeToggle = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark')
