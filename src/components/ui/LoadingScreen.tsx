@@ -7,7 +7,15 @@ import { useTheme } from '../../lib/theme';
 import { useLoading } from '../../lib/loading-context';
 
 export default function LoadingScreen() {
-  const [isLoading, setIsLoading] = useState(true);
+  // Check if animation has been played this session
+  const [hasPlayedAnimation, setHasPlayedAnimation] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('loadingAnimationPlayed') === 'true';
+    }
+    return false;
+  });
+
+  const [isLoading, setIsLoading] = useState(!hasPlayedAnimation);
   const { isLoading: contextLoading, setIsLoading: setLoadingContext } = useLoading();
   const [mounted, setMounted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -15,14 +23,17 @@ export default function LoadingScreen() {
 
   // Start loading animation when context loading becomes true
   useEffect(() => {
-    if (contextLoading) {
+    if (contextLoading && !hasPlayedAnimation) {
       const timer = setTimeout(() => {
         setIsLoading(true);
         setProgress(0);
       }, 0);
       return () => clearTimeout(timer);
+    } else if (contextLoading && hasPlayedAnimation) {
+      // If animation has been played, immediately set loading to false
+      setLoadingContext(false);
     }
-  }, [contextLoading]);
+  }, [contextLoading, hasPlayedAnimation, setLoadingContext]);
 
   useEffect(() => {
     if (!isLoading) return;
@@ -50,6 +61,11 @@ export default function LoadingScreen() {
     const completeTimer = setTimeout(() => {
       setIsLoading(false);
       setLoadingContext(false);
+      // Mark animation as played in sessionStorage
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('loadingAnimationPlayed', 'true');
+        setHasPlayedAnimation(true);
+      }
       // Scroll to top after loading screen
       window.scrollTo({ top: 0, behavior: 'instant' });
     }, 3500); // Total ~3.5 seconds
@@ -60,6 +76,8 @@ export default function LoadingScreen() {
         setTimeout(() => {
           setIsLoading(false);
           setLoadingContext(false);
+          sessionStorage.setItem('loadingAnimationPlayed', 'true');
+          setHasPlayedAnimation(true);
           window.scrollTo({ top: 0, behavior: 'instant' });
         }, 3000);
       } else {
@@ -67,6 +85,8 @@ export default function LoadingScreen() {
           setTimeout(() => {
             setIsLoading(false);
             setLoadingContext(false);
+            sessionStorage.setItem('loadingAnimationPlayed', 'true');
+            setHasPlayedAnimation(true);
             window.scrollTo({ top: 0, behavior: 'instant' });
           }, 3000);
         });

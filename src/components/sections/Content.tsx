@@ -154,11 +154,11 @@ export default function Content() {
                 </ContainerScroll>
             </section>
 
-            <section id="waitlist" className="w-full flex flex-col items-center justify-center text-center">
+            <section id="waitlist" className="w-full flex flex-col items-center justify-center text-center px-4">
                 {/* Waitlist form is only rendered on client to prevent hydration errors */}
                 {isMounted && (
                     <div
-                        className="waitlister-form w-[50%]"
+                        className="waitlister-form w-full sm:w-[85%] md:w-[75%] lg:w-[60%] xl:w-[50%]"
                         data-waitlist-key="-i8DggpXQdia"
                         data-height="350px"
                         style={theme === 'dark' ? { filter: 'invert(1) hue-rotate(180deg)' } : {}}

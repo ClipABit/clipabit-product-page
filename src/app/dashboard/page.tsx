@@ -1,39 +1,54 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { auth } from '@/src/lib/firebase';
 import { useAuthState } from '@/src/lib/hooks/firebase';
 import { signOut } from 'firebase/auth';
-import SignInModal from '@/src/components/auth/SignInModal';
 
 export default function Dashboard() {
     const user = useAuthState(auth);
-    const [showModal, setShowModal] = useState(true);
+    const router = useRouter();
+    const [isRedirecting, setIsRedirecting] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    // Wait for component to mount
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    // Redirect to sign-in if not authenticated
+    useEffect(() => {
+        // Only check after component is mounted and give auth state time to stabilize
+        if (!mounted) return;
+
+        // Add a small delay to ensure auth state is stable after navigation
+        const timer = setTimeout(() => {
+            if (user === null && !isRedirecting) {
+                setIsRedirecting(true);
+                router.push('/sign-in');
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [user, router, isRedirecting, mounted]);
 
     // Sign out handler
     const handleSignOut = async () => {
         try {
             await signOut(auth);
+            // Redirect to homepage after signing out
+            router.push('/');
         } catch (error) {
             console.error('Error signing out:', error);
         }
     };
 
-    // Show sign in modal if not authenticated
-    if (!user) {
+    // Show loading state while checking auth
+    if (user === undefined || user === null) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold text-foreground mb-4">Welcome to Clipabit</h1>
-                    <p className="text-foreground/60 mb-6">Please sign in to access your dashboard</p>
-                    <button
-                        onClick={() => setShowModal(true)}
-                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg transition-all"
-                    >
-                        Sign In
-                    </button>
-                </div>
-                <SignInModal isOpen={showModal} onClose={() => setShowModal(false)} />
+                <div className="text-foreground">Loading...</div>
             </div>
         );
     }

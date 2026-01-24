@@ -2,10 +2,14 @@
 
 import Image from 'next/image'
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useTheme } from '../../lib/theme';
 import { useLoading } from '../../lib/loading-context';
 import { LuSun, LuMoon } from 'react-icons/lu';
 import { InteractiveHoverButton } from '../ui/InteractiveHoverButton';
+import { useAuthState } from '@/src/lib/hooks/firebase';
+import { auth } from '@/src/lib/firebase';
+import { FluidMenu } from '../ui/FluidMenu';
 
 function cn(...classes: Array<string | false | null | undefined>) {
     return classes.filter(Boolean).join(' ');
@@ -16,12 +20,18 @@ type Props = Record<string, never>
 function Header({ }: Props) {
     const { theme, setTheme } = useTheme();
     const { setIsLoading } = useLoading();
+    const user = useAuthState(auth);
+    const pathname = usePathname();
 
     const handleLogoClick = (e: React.MouseEvent) => {
-        e.preventDefault();
-        setIsLoading(true);
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        // If already on home page, scroll to top
+        if (pathname === '/') {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else {
+            // Otherwise, let the Link navigate to home page
+            setIsLoading(true);
+        }
     };
 
     const handleThemeChange = () => {
@@ -63,7 +73,13 @@ function Header({ }: Props) {
                     </div>
                 </Link>
             </div>
-            <div className='flex items-center justify-end gap-2 sm:gap-4 md:gap-8'>
+            {/* Mobile Navigation - FluidMenu */}
+            <div className="md:hidden">
+                <FluidMenu user={user} />
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className='hidden md:flex items-center justify-end gap-2'>
                 <Link href="https://clipabit.streamlit.app" className="whitespace-nowrap">
                     <InteractiveHoverButton
                         asChild
@@ -73,16 +89,7 @@ function Header({ }: Props) {
                         overlayClassName="bg-[#5AB9F3]"
                     />
                 </Link>
-                <Link href="/dashboard" className="whitespace-nowrap">
-                    <InteractiveHoverButton
-                        asChild
-                        text="Sign In"
-                        className="text-md md:text-xl"
-                        // Orange overlay for waitlist
-                        overlayClassName="bg-[#FAAF04]"
-                    />
-                </Link>
-                {/* <Link href="/demo" className="whitespace-nowrap">
+                <Link href="/#waitlist" className="whitespace-nowrap">
                     <InteractiveHoverButton
                         asChild
                         text="Waitlist"
@@ -90,9 +97,8 @@ function Header({ }: Props) {
                         // Orange overlay for waitlist
                         overlayClassName="bg-[#FAAF04]"
                     />
-                </Link> */}
-                {/* TODO: Use fluid menu in mobile */}
-                <Link href="https://gofund.me/e67494308" className="whitespace-nowrap hidden md:block">
+                </Link>
+                <Link href="https://gofund.me/e67494308" className="whitespace-nowrap">
                     <InteractiveHoverButton
                         asChild
                         text="Support Us!"
@@ -101,8 +107,28 @@ function Header({ }: Props) {
                         overlayClassName="bg-[#B37FEB]"
                     />
                 </Link>
-
-                <div className="hidden md:flex items-center ml-2 md:ml-4">
+                {user ? (
+                    <Link href="/dashboard" className="whitespace-nowrap">
+                        <InteractiveHoverButton
+                            asChild
+                            text="Dashboard"
+                            className="text-md md:text-xl"
+                            // Orange overlay for waitlist
+                            overlayClassName="bg-[#FAAF04]"
+                        />
+                    </Link>
+                ) : (
+                    <Link href="/sign-in" className="whitespace-nowrap">
+                        <InteractiveHoverButton
+                            asChild
+                            text="Sign In"
+                            className="text-md md:text-xl"
+                            // Orange overlay for waitlist
+                            overlayClassName="bg-[#FAAF04]"
+                        />
+                    </Link>
+                )}
+                <div className="flex items-center ml-2 md:ml-4">
                     <button
                         onClick={handleThemeChange}
                         className={cn(
