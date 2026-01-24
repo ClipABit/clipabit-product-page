@@ -40,6 +40,7 @@ export default function SignIn() {
     };
 
     const handleGoogleSignIn = async () => {
+        if (!auth) return;
         setLoading(true);
         setError('');
         try {
@@ -56,6 +57,7 @@ export default function SignIn() {
 
     const handleEmailSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!auth) return;
         setLoading(true);
         setError('');
 
@@ -72,6 +74,7 @@ export default function SignIn() {
 
     const handleEmailSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!auth) return;
         setLoading(true);
         setError('');
 
@@ -100,6 +103,7 @@ export default function SignIn() {
 
     const handleForgotPassword = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!auth) return;
         setLoading(true);
         setError('');
         setMessage('');

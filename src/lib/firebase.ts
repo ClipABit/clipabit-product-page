@@ -1,5 +1,5 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
+import { getAuth, type Auth } from 'firebase/auth';
 
 // Firebase configuration
 // These are client-side keys and are safe to be public
@@ -13,8 +13,13 @@ const firebaseConfig = {
   appId: "1:749495106862:web:8ed418cd7c7a17c5194ebf",
 };
 
-// Initialize Firebase
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-const auth = getAuth(app);
+// Initialize Firebase only on client side
+let app: FirebaseApp | undefined;
+let auth: Auth | undefined;
+
+if (typeof window !== 'undefined') {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+  auth = getAuth(app);
+}
 
 export { app, auth };

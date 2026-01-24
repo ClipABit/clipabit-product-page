@@ -26,6 +26,7 @@ export default function Dashboard() {
 
     // Sign out handler
     const handleSignOut = async () => {
+        if (!auth) return;
         try {
             await signOut(auth);
             // Redirect to homepage after signing out
