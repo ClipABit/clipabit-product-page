@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 
 type Props = {
   words?: string[];
@@ -18,14 +18,13 @@ export default function GooeyTextMorph({
   className,
 }: Props) {
   const [index, setIndex] = useState(0);
-  const next = (index + 1) % words.length;
 
   useEffect(() => {
     const id = setInterval(() => setIndex(i => (i + 1) % words.length), intervalMs);
     return () => clearInterval(id);
   }, [words.length, intervalMs]);
 
-  const filterId = useMemo(() => `gooey-${Math.random().toString(36).slice(2)}`, []);
+  const filterId = `gooey-${useId().replace(/:/g, '')}`;
 
   return (
     <span className={`inline-block relative tracking-tight ${className ?? ''}`}>

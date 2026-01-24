@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import localFont from "next/font/local";
-import Script from "next/script";
 
 import Header from "../components/ui/Header";
 import Footer from "../components/ui/Footer";
@@ -41,25 +40,7 @@ export default function RootLayout({
             }
           `
         }} />
-        <Script id="theme-init" strategy="beforeInteractive">
-          {`(function(){
-  try{
-    var stored = localStorage.getItem('theme');
-    // Default to light mode to match SSR (prevents flash)
-    var isDark = stored === 'dark';
-    var root = document.documentElement;
-    // Remove any existing theme classes
-    root.classList.remove('light','dark');
-    // Apply theme immediately
-    root.classList.add(isDark ? 'dark' : 'light');
-    root.style.colorScheme = isDark ? 'dark' : 'light';
-  }catch(_e){
-    // Fallback: ensure light mode on error
-    document.documentElement.classList.add('light');
-    document.documentElement.style.colorScheme = 'light';
-  }
-})();`}
-        </Script>
+        <script src="https://waitlister.me/js/embed.js" defer></script>
       </head>
       <body
         className={`${clashDisplay.variable} antialiased`}
@@ -67,9 +48,9 @@ export default function RootLayout({
         <ThemeProvider>
           <LoadingProvider>
             <LoadingScreen />
-          <Header />
-          {children}
-          <Footer />
+            <Header />
+            {children}
+            <Footer />
           </LoadingProvider>
         </ThemeProvider>
       </body>

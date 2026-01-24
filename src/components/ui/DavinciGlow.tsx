@@ -50,8 +50,8 @@ export default function DavinciGlow({ src, width, height, className }: Props) {
       className={`relative select-none [perspective:800px] ${className ?? ''}`}
       style={
         {
-          ['--mx' as any]: '50%',
-          ['--my' as any]: '50%',
+          ['--mx']: '50%',
+          ['--my']: '50%',
         } as React.CSSProperties
       }
     >

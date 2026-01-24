@@ -24,34 +24,40 @@ export default function LinkPreview({ url, children, className }: Props) {
   useEffect(() => {
     if (!open || metadata) return;
     const controller = new AbortController();
-    
+
     // Parse URL and set metadata based on known URLs
     try {
       const urlObj = new URL(url);
       const hostname = urlObj.hostname.toLowerCase();
-      
+
       // Special handling for DaVinci Resolve URL
       if (hostname.includes('blackmagicdesign.com') || hostname.includes('davinciresolve')) {
-        setMetadata({
-          title: 'DaVinci Resolve',
-          description: 'Professional video editing, color correction, and audio post-production software. Industry-leading tools for creative professionals.',
-          siteName: 'Blackmagic Design',
-        });
+        setTimeout(() => {
+          setMetadata({
+            title: 'DaVinci Resolve',
+            description: 'Professional video editing, color correction, and audio post-production software. Industry-leading tools for creative professionals.',
+            siteName: 'Blackmagic Design',
+          });
+        }, 0);
       } else {
         // Generic fallback
-        setMetadata({
-          title: urlObj.hostname.replace('www.', ''),
-          description: `Visit ${urlObj.hostname}`,
-          siteName: urlObj.hostname,
-        });
+        setTimeout(() => {
+          setMetadata({
+            title: urlObj.hostname.replace('www.', ''),
+            description: `Visit ${urlObj.hostname}`,
+            siteName: urlObj.hostname,
+          });
+        }, 0);
       }
     } catch {
-      setMetadata({
-        title: 'Link Preview',
-        description: url,
-      });
+      setTimeout(() => {
+        setMetadata({
+          title: 'Link Preview',
+          description: url,
+        });
+      }, 0);
     }
-    
+
     return () => controller.abort();
   }, [open, url, metadata]);
 
@@ -81,6 +87,7 @@ export default function LinkPreview({ url, children, className }: Props) {
           style={{ left: pos.x, top: pos.y }}
         >
           {metadata?.image && (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={metadata.image}
               alt={metadata.title}

@@ -10,7 +10,7 @@ type Props = {
   className?: string;
 };
 
-export function TextHoverEffect({ text, duration = 0, className }: Props) {
+export function TextHoverEffect({ text, duration = 0 }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const [hovered, setHovered] = useState(false);

@@ -58,8 +58,8 @@ export const HeroHighlight = ({
       )}
       style={
         {
-          ["--mouse-x" as any]: "50%",
-          ["--mouse-y" as any]: "50%",
+          ["--mouse-x"]: "50%",
+          ["--mouse-y"]: "50%",
         } as React.CSSProperties
       }
     >

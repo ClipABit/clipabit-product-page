@@ -1,12 +1,8 @@
-import React from 'react'
-
-type Props = {}
-
-export default function FilmReel({ }: Props) {
+export default function FilmReel() {
     // Create enough frames to ensure seamless scrolling (duplicate for seamless loop)
     const frameCount = 20;
     const frames = Array.from({ length: frameCount * 2 }); // Duplicate for seamless loop
-    
+
     return (
         // Container: Full width with overflow hidden to show scrolling animation
         <div className="w-full overflow-hidden relative" style={{ height: '264px', minHeight: '264px' }}>
@@ -18,8 +14,8 @@ export default function FilmReel({ }: Props) {
                     In light mode invert to make lines black; in dark keep white. */}
                 <div
                     className="pointer-events-none absolute inset-0 bg-[url('/reel.svg')] bg-repeat-x bg-left brightness-0 dark:invert"
-                    style={{ 
-                        willChange: 'transform', 
+                    style={{
+                        willChange: 'transform',
                         transform: 'translateZ(0)',
                         width: '100%',
                         height: '264px',

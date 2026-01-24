@@ -16,7 +16,7 @@ export const InteractiveHoverButton = React.forwardRef<
   HTMLButtonElement,
   InteractiveHoverButtonProps
 >(({ text = 'Button', className, asChild = false, overlayClassName, ...props }, ref) => {
-  const Comp: any = asChild ? 'span' : 'button';
+  const Comp = asChild ? 'span' : 'button';
   return (
     <Comp
       ref={ref}

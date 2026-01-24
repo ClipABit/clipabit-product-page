@@ -34,12 +34,12 @@ export default function HoverDefinition({ word, children }: Props) {
           const meaning = entry?.meanings?.[0];
           const def = meaning?.definitions?.[0]?.definition;
           const part = meaning?.partOfSpeech;
-          setDefn({ definition: def, partOfSpeech: part, phonetic: phon });
-        } catch (_e) {
+          setDefn({ definition: def, phonetic: phon, partOfSpeech: part });
+        } catch {
           setDefn(null);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
     return () => controller.abort();
   }, [open, word, defn]);
 
