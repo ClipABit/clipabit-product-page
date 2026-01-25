@@ -1,10 +1,14 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/src/lib/firebase';
 import { useAuthState } from '@/src/lib/hooks/firebase';
 import { signOut } from 'firebase/auth';
+
+// Custom hook to safely check if component is mounted (client-side)
+const emptySubscribe = () => () => { };
+const useIsMounted = () => useSyncExternalStore(emptySubscribe, () => true, () => false);
 
 export default function Dashboard() {
     const user = useAuthState(auth);
