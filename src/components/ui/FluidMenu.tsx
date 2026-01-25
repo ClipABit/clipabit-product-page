@@ -1,11 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useSyncExternalStore } from "react"
 import { LuSun, LuMoon } from "react-icons/lu"
 import { motion, AnimatePresence, type Variants } from "motion/react"
 import { useTheme } from '../../lib/theme'
 import Link from 'next/link'
 import { User } from 'firebase/auth'
+
+// Custom hook to safely check if component is mounted (client-side)
+const emptySubscribe = () => () => { }
+const useIsMounted = () => useSyncExternalStore(emptySubscribe, () => true, () => false)
 
 interface FluidMenuProps {
   user: User | null | undefined
@@ -13,12 +17,8 @@ interface FluidMenuProps {
 
 export function FluidMenu({ user }: FluidMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const mounted = useIsMounted()
   const { theme, setTheme } = useTheme()
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Prevent body scroll when menu is open
   useEffect(() => {

@@ -84,7 +84,7 @@ export default function Dashboard() {
                 </div>
                 <div className="text-center p-6">
                     <p className="text-foreground">
-                    Keep an eye out... ClipABit is launching really soon! 👀
+                        Keep an eye out... ClipABit is launching really soon! 👀
                     </p>
                 </div>
             </main>

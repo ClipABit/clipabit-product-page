@@ -11,7 +11,6 @@ import {
     AuthError
 } from 'firebase/auth';
 import { auth } from '@/src/lib/firebase';
-import { useAuthState } from '@/src/lib/hooks/firebase';
 import { useTheme } from '@/src/lib/theme';
 
 type AuthMode = 'signin' | 'signup' | 'forgot-password';
@@ -25,7 +24,6 @@ export default function SignIn() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
     const router = useRouter();
-    const user = useAuthState(auth);
     const { theme } = useTheme();
 
     const resetForm = () => {
@@ -181,11 +179,10 @@ export default function SignIn() {
                                 <button
                                     onClick={handleGoogleSignIn}
                                     disabled={loading}
-                                    className={`w-full flex items-center justify-center gap-3 px-4 py-3 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                                        theme === 'dark'
-                                            ? 'bg-white hover:bg-gray-100 text-gray-800'
-                                            : 'bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/20'
-                                    }`}
+                                    className={`w-full flex items-center justify-center gap-3 px-4 py-3 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
+                                        ? 'bg-white hover:bg-gray-100 text-gray-800'
+                                        : 'bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/20'
+                                        }`}
                                 >
                                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                                         <path
