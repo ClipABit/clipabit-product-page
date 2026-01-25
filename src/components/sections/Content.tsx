@@ -12,17 +12,18 @@ import { useTheme } from '../../lib/theme'
 
 export default function Content() {
     const howRef = useRef<HTMLDivElement | null>(null);
-    const [isMounted, setIsMounted] = useState(false);
+    const isMountedRef = useRef(false);
+    const [, forceUpdate] = useState({});
     const { theme } = useTheme();
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsMounted(true), 0);
-        return () => clearTimeout(timer);
+        if (!isMountedRef.current) {
+            isMountedRef.current = true;
+            forceUpdate({});
+        }
     }, []);
 
     useEffect(() => {
-        if (!isMounted) return;
-
         // Load Waitlister script
         const waitlisterScript = document.createElement('script');
         waitlisterScript.src = 'https://waitlister.me/waitlister.js';
@@ -34,7 +35,7 @@ export default function Content() {
                 document.body.removeChild(waitlisterScript);
             }
         };
-    }, [isMounted]);
+    }, []);
 
     return (
         <section className="flex flex-col items-center justify-center space-y-32 md:space-y-40 px-4 md:px-20 py-10 mt-24">
@@ -154,11 +155,11 @@ export default function Content() {
                 </ContainerScroll>
             </section>
 
-            <section id="waitlist" className="w-full flex flex-col items-center justify-center text-center">
+            <section id="waitlist" className="w-full flex flex-col items-center justify-center text-center px-4">
                 {/* Waitlist form is only rendered on client to prevent hydration errors */}
-                {isMounted && (
+                {isMountedRef.current && (
                     <div
-                        className="waitlister-form w-[50%]"
+                        className="waitlister-form w-full sm:w-[85%] md:w-[75%] lg:w-[60%] xl:w-[50%]"
                         data-waitlist-key="-i8DggpXQdia"
                         data-height="350px"
                         style={theme === 'dark' ? { filter: 'invert(1) hue-rotate(180deg)' } : {}}

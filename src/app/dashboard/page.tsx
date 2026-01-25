@@ -1,39 +1,42 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { auth } from '@/src/lib/firebase';
 import { useAuthState } from '@/src/lib/hooks/firebase';
 import { signOut } from 'firebase/auth';
-import SignInModal from '@/src/components/auth/SignInModal';
 
 export default function Dashboard() {
     const user = useAuthState(auth);
-    const [showModal, setShowModal] = useState(true);
+    const router = useRouter();
+    const hasRedirected = useRef(false);
+
+    // Redirect to sign-in if not authenticated
+    useEffect(() => {
+        // Only redirect if user is explicitly null (not undefined which means loading)
+        if (user === null && !hasRedirected.current) {
+            hasRedirected.current = true;
+            router.push('/sign-in');
+        }
+    }, [user, router]);
 
     // Sign out handler
     const handleSignOut = async () => {
+        if (!auth) return;
         try {
             await signOut(auth);
+            // Redirect to homepage after signing out
+            router.push('/');
         } catch (error) {
             console.error('Error signing out:', error);
         }
     };
 
-    // Show sign in modal if not authenticated
-    if (!user) {
+    // Show loading state while checking auth
+    if (user === undefined || user === null) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
-                <div className="text-center">
-                    <h1 className="text-2xl font-bold text-foreground mb-4">Welcome to Clipabit</h1>
-                    <p className="text-foreground/60 mb-6">Please sign in to access your dashboard</p>
-                    <button
-                        onClick={() => setShowModal(true)}
-                        className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-lg transition-all"
-                    >
-                        Sign In
-                    </button>
-                </div>
-                <SignInModal isOpen={showModal} onClose={() => setShowModal(false)} />
+                <div className="text-foreground">Loading...</div>
             </div>
         );
     }
