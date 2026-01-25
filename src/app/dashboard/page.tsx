@@ -1,21 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/src/lib/firebase';
 import { useAuthState } from '@/src/lib/hooks/firebase';
 import { signOut } from 'firebase/auth';
 
+// Custom hook to safely check if component is mounted (client-side)
+const emptySubscribe = () => () => { };
+const useIsMounted = () => useSyncExternalStore(emptySubscribe, () => true, () => false);
+
 export default function Dashboard() {
     const user = useAuthState(auth);
     const router = useRouter();
     const [isRedirecting, setIsRedirecting] = useState(false);
-    const [mounted, setMounted] = useState(false);
-
-    // Wait for component to mount
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+    const mounted = useIsMounted();
 
     // Redirect to sign-in if not authenticated
     useEffect(() => {
