@@ -93,7 +93,7 @@ function Header({ }: Props) {
                     <InteractiveHoverButton
                         asChild
                         text="Waitlist"
-                        className="text-md md:text-2xl"
+                        className="text-md md:text-xl"
                         // Orange overlay for waitlist
                         overlayClassName="bg-[#FAAF04]"
                     />
