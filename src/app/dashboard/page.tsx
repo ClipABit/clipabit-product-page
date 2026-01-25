@@ -1,24 +1,36 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { auth } from '@/src/lib/firebase';
 import { useAuthState } from '@/src/lib/hooks/firebase';
 import { signOut } from 'firebase/auth';
 
+// Custom hook to safely check if component is mounted (client-side)
+const emptySubscribe = () => () => { };
+const useIsMounted = () => useSyncExternalStore(emptySubscribe, () => true, () => false);
+
 export default function Dashboard() {
     const user = useAuthState(auth);
     const router = useRouter();
-    const hasRedirected = useRef(false);
+    const [isRedirecting, setIsRedirecting] = useState(false);
+    const mounted = useIsMounted();
 
     // Redirect to sign-in if not authenticated
     useEffect(() => {
-        // Only redirect if user is explicitly null (not undefined which means loading)
-        if (user === null && !hasRedirected.current) {
-            hasRedirected.current = true;
-            router.push('/sign-in');
-        }
-    }, [user, router]);
+        // Only check after component is mounted and give auth state time to stabilize
+        if (!mounted) return;
+
+        // Add a small delay to ensure auth state is stable after navigation
+        const timer = setTimeout(() => {
+            if (user === null && !isRedirecting) {
+                setIsRedirecting(true);
+                router.push('/sign-in');
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [user, router, isRedirecting, mounted]);
 
     // Sign out handler
     const handleSignOut = async () => {
@@ -72,7 +84,7 @@ export default function Dashboard() {
                 </div>
                 <div className="text-center p-6">
                     <p className="text-foreground">
-                    Keep an eye out... ClipABit is launching really soon! 👀
+                        Keep an eye out... ClipABit is launching really soon! 👀
                     </p>
                 </div>
             </main>

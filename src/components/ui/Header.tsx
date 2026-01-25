@@ -113,7 +113,7 @@ function Header({ }: Props) {
                             asChild
                             text="Dashboard"
                             className="text-md md:text-xl"
-                            // Orange overlay for dashboard
+                            // Orange overlay for waitlist
                             overlayClassName="bg-[#FAAF04]"
                         />
                     </Link>
@@ -123,7 +123,7 @@ function Header({ }: Props) {
                             asChild
                             text="Sign In"
                             className="text-md md:text-xl"
-                            // Orange overlay for sign in
+                            // Orange overlay for waitlist
                             overlayClassName="bg-[#FAAF04]"
                         />
                     </Link>

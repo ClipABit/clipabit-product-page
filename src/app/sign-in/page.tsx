@@ -40,7 +40,6 @@ export default function SignIn() {
     };
 
     const handleGoogleSignIn = async () => {
-        if (!auth) return;
         setLoading(true);
         setError('');
         try {
@@ -57,7 +56,6 @@ export default function SignIn() {
 
     const handleEmailSignIn = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!auth) return;
         setLoading(true);
         setError('');
 
@@ -74,7 +72,6 @@ export default function SignIn() {
 
     const handleEmailSignUp = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!auth) return;
         setLoading(true);
         setError('');
 
@@ -103,7 +100,6 @@ export default function SignIn() {
 
     const handleForgotPassword = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!auth) return;
         setLoading(true);
         setError('');
         setMessage('');
@@ -183,11 +179,10 @@ export default function SignIn() {
                                 <button
                                     onClick={handleGoogleSignIn}
                                     disabled={loading}
-                                    className={`w-full flex items-center justify-center gap-3 px-4 py-3 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
-                                        theme === 'dark'
-                                            ? 'bg-white hover:bg-gray-100 text-gray-800'
-                                            : 'bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/20'
-                                    }`}
+                                    className={`w-full flex items-center justify-center gap-3 px-4 py-3 font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${theme === 'dark'
+                                        ? 'bg-white hover:bg-gray-100 text-gray-800'
+                                        : 'bg-foreground/10 hover:bg-foreground/20 text-foreground border border-foreground/20'
+                                        }`}
                                 >
                                     <svg className="w-5 h-5" viewBox="0 0 24 24">
                                         <path

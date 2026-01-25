@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import DemoVideo from "../ui/DemoVideo";
@@ -10,18 +10,14 @@ import { GooeyText } from "../ui/gooey-text-morphing";
 import FilmReel from "../ui/FilmReel";
 import { useTheme } from '../../lib/theme'
 
+// Custom hook to safely check if component is mounted (client-side)
+const emptySubscribe = () => () => { };
+const useIsMounted = () => useSyncExternalStore(emptySubscribe, () => true, () => false);
+
 export default function Content() {
     const howRef = useRef<HTMLDivElement | null>(null);
-    const isMountedRef = useRef(false);
-    const [, forceUpdate] = useState({});
+    const isMounted = useIsMounted();
     const { theme } = useTheme();
-
-    useEffect(() => {
-        if (!isMountedRef.current) {
-            isMountedRef.current = true;
-            forceUpdate({});
-        }
-    }, []);
 
     useEffect(() => {
         // Load Waitlister script
@@ -157,7 +153,7 @@ export default function Content() {
 
             <section id="waitlist" className="w-full flex flex-col items-center justify-center text-center px-4">
                 {/* Waitlist form is only rendered on client to prevent hydration errors */}
-                {isMountedRef.current && (
+                {isMounted && (
                     <div
                         className="waitlister-form w-full sm:w-[85%] md:w-[75%] lg:w-[60%] xl:w-[50%]"
                         data-waitlist-key="-i8DggpXQdia"

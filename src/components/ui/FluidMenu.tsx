@@ -1,11 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useSyncExternalStore } from "react"
 import { LuSun, LuMoon } from "react-icons/lu"
 import { motion, AnimatePresence, type Variants } from "motion/react"
 import { useTheme } from '../../lib/theme'
 import Link from 'next/link'
 import { User } from 'firebase/auth'
+
+// Custom hook to safely check if component is mounted (client-side)
+const emptySubscribe = () => () => { }
+const useIsMounted = () => useSyncExternalStore(emptySubscribe, () => true, () => false)
 
 interface FluidMenuProps {
   user: User | null | undefined
@@ -13,7 +17,20 @@ interface FluidMenuProps {
 
 export function FluidMenu({ user }: FluidMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const mounted = useIsMounted()
   const { theme, setTheme } = useTheme()
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
 
   const handleToggle = () => {
     setIsOpen(!isOpen)
@@ -56,21 +73,25 @@ export function FluidMenu({ user }: FluidMenuProps) {
       key: 'demo',
       label: 'Demo',
       href: 'https://clipabit.streamlit.app',
+      color: '#5AB9F3',
     },
     {
       key: 'waitlist',
       label: 'Waitlist',
       href: '/#waitlist',
+      color: '#FAAF04',
     },
     {
       key: 'support',
       label: 'Support Us!',
       href: 'https://gofund.me/e67494308',
+      color: '#B37FEB',
     },
     {
       key: 'auth',
       label: user ? 'Dashboard' : 'Sign In',
       href: user ? '/dashboard' : '/sign-in',
+      color: '#FAAF04',
     },
   ]
 
@@ -152,15 +173,6 @@ export function FluidMenu({ user }: FluidMenuProps) {
             <motion.div
               className="absolute inset-0 bg-background/95 backdrop-blur-md"
               onClick={handleClose}
-              tabIndex={0}
-              role="button"
-              aria-label="Close menu"
-              onKeyDown={(event) => {
-                if (event.key === 'Escape' || event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  handleClose()
-                }
-              }}
             />
 
             {/* Menu Content */}
@@ -207,17 +219,24 @@ export function FluidMenu({ user }: FluidMenuProps) {
                   <button
                     onClick={handleThemeToggle}
                     className="flex items-center gap-2 text-lg text-foreground/60 hover:text-foreground transition-colors duration-200"
-                    aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+                    aria-label={mounted && theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
                   >
-                    {theme === 'dark' ? (
-                      <>
-                        <LuSun className="h-5 w-5" />
-                        <span>Light Mode</span>
-                      </>
+                    {mounted ? (
+                      theme === 'dark' ? (
+                        <>
+                          <LuSun className="h-5 w-5" />
+                          <span>Light Mode</span>
+                        </>
+                      ) : (
+                        <>
+                          <LuMoon className="h-5 w-5" />
+                          <span>Dark Mode</span>
+                        </>
+                      )
                     ) : (
                       <>
                         <LuMoon className="h-5 w-5" />
-                        <span>Dark Mode</span>
+                        <span>Theme</span>
                       </>
                     )}
                   </button>
