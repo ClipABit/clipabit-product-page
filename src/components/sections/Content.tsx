@@ -141,7 +141,7 @@ export default function Content() {
                     }
                 >
                     <Image
-                        src="https://firebasestorage.googleapis.com/v0/b/clipabit.firebasestorage.app/o/team.webp?alt=media&token=b7242bfc-05e6-4c6f-874d-face760d5411"
+                        src="https://firebasestorage.googleapis.com/v0/b/clipabit.firebasestorage.app/o/new%20team%20photo.webp?alt=media&token=288342bb-d2fc-4907-8c69-b4c3de123c1b"
                         alt="Team Photo"
                         className="mx-auto rounded-2xl object-cover h-full w-full object-center"
                         width={1400}
