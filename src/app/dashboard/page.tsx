@@ -72,13 +72,11 @@ export default function Dashboard() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${idToken}`,
                 },
                 body: JSON.stringify({
                     user_code: userCode.trim(),
-                    user_id: user.uid,
-                    id_token: idToken,
-                    refresh_token: refreshToken,
+                    firebase_id_token: idToken,
+                    firebase_refresh_token: refreshToken
                 }),
             });
             
