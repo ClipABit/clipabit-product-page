@@ -52,7 +52,7 @@ export default function DemoPage() {
             </button>
           </div>
         ) : (
-          <div className="mb-6 p-4 bg-foreground/5 border border-foreground/10 rounded-xl">
+          <div className="mb-6">
             <p className="text-foreground/70 text-sm sm:text-base">
               The repository below mimics the footage you would have in your video editor&apos;s media pool.
               Try searching for specific actions, settings, objects in the videos using natural language!
