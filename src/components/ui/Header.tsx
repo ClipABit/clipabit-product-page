@@ -80,7 +80,7 @@ function Header({ }: Props) {
 
             {/* Desktop Navigation */}
             <div className='hidden md:flex items-center justify-end gap-2'>
-                <Link href="https://clipabit.streamlit.app" className="whitespace-nowrap">
+                <Link href="/demo" className="whitespace-nowrap">
                     <InteractiveHoverButton
                         asChild
                         text="Demo"
