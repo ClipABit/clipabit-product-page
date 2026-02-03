@@ -19,7 +19,7 @@ type Props = Record<string, never>
 
 function Header({ }: Props) {
     const { theme, setTheme } = useTheme();
-    const { setIsLoading } = useLoading();
+    const { isLoading, setIsLoading } = useLoading();
     const user = useAuthState(auth);
     const pathname = usePathname();
 
@@ -74,7 +74,7 @@ function Header({ }: Props) {
                 </Link>
             </div>
             {/* Mobile Navigation - FluidMenu */}
-            <div className="md:hidden">
+            <div className={cn("md:hidden transition-opacity duration-500", isLoading ? "opacity-0" : "opacity-100")}>
                 <FluidMenu user={user} />
             </div>
 
@@ -132,7 +132,7 @@ function Header({ }: Props) {
                     <button
                         onClick={handleThemeChange}
                         className={cn(
-                            'group relative w-12 h-12 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-[var(--background)] p-2 text-center font-semibold text-[var(--foreground)]',
+                            'group relative w-12 h-12 cursor-pointer overflow-hidden rounded-full border border-white/10 bg-background p-2 text-center font-semibold text-foreground',
                             'transition-colors duration-300',
                             'flex items-center justify-center hover:bg-[#FAAF04]'
                         )}
