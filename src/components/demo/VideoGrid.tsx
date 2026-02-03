@@ -43,6 +43,7 @@ export function VideoGrid({
               hashedIdentifier={result.metadata.hashed_identifier}
               score={result.score}
               startTime={result.metadata.start_time_s}
+              rawData={result as unknown as Record<string, unknown>}
               onDelete={onDelete}
             />
           ))
@@ -53,6 +54,7 @@ export function VideoGrid({
               fileName={video.file_name}
               presignedUrl={video.presigned_url}
               hashedIdentifier={video.hashed_identifier}
+              rawData={video as unknown as Record<string, unknown>}
               onDelete={onDelete}
             />
           ))}
