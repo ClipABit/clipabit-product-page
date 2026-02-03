@@ -1,9 +1,11 @@
 /**
  * API functions for the ClipABit demo.
- * Mirrors the API calls from monorepo/frontend/streamlit/pages/search_demo.py
  */
 
 import { API_ENDPOINTS, NAMESPACE, REPO_PAGE_SIZE, IS_FILE_CHANGE_ENABLED, ENVIRONMENT } from './config';
+
+// Default timeout for API requests (60 seconds to account for cold starts)
+const API_TIMEOUT_MS = 60000;
 
 // Types
 export interface VideoMetadata {
@@ -73,7 +75,7 @@ export async function searchVideos(query: string): Promise<SearchResponse> {
 
     const response = await fetch(`${API_ENDPOINTS.SEARCH}?${params}`, {
       method: 'GET',
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(API_TIMEOUT_MS),
     });
 
     if (response.ok) {
@@ -105,7 +107,7 @@ export async function fetchVideosPage(
 
     const response = await fetch(`${API_ENDPOINTS.LIST_VIDEOS}?${params}`, {
       method: 'GET',
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(API_TIMEOUT_MS),
     });
 
     if (response.ok) {
@@ -179,7 +181,7 @@ export async function pollJobStatus(jobId: string): Promise<JobStatus> {
     const params = new URLSearchParams({ job_id: jobId });
     const response = await fetch(`${API_ENDPOINTS.STATUS}?${params}`, {
       method: 'GET',
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(API_TIMEOUT_MS),
     });
 
     if (response.ok) {
@@ -211,7 +213,7 @@ export async function deleteVideo(
 
     const response = await fetch(`${API_ENDPOINTS.DELETE_VIDEO(hashedIdentifier)}?${params}`, {
       method: 'DELETE',
-      signal: AbortSignal.timeout(30000),
+      signal: AbortSignal.timeout(API_TIMEOUT_MS),
     });
 
     if (response.ok) {
