@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useSearch, useVideoRepository, useToast, useDeleteVideo } from '@/src/lib/demo/use-demo-state';
 import { IS_FILE_CHANGE_ENABLED } from '@/src/lib/demo/config';
@@ -14,26 +14,20 @@ export default function DemoPage() {
   // Simple, focused hooks
   const { toast, showToast, clearToast } = useToast();
   const searchState = useSearch();
-  const repo = useVideoRepository();
+  // Only auto-load when not in search mode
+  const repo = useVideoRepository(!searchState.isActive);
 
-  // Reset both search and repo when content changes
-  const handleContentChange = useCallback(() => {
-    searchState.clear();
-    repo.reset();
-  }, [searchState, repo]);
-
-  const { handleDelete } = useDeleteVideo(handleContentChange, showToast);
-
-  // Modal state (kept simple - just open/close)
+  // Modal state
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; name: string } | null>(null);
 
-  // Load videos on mount (only when not searching)
-  useEffect(() => {
-    if (!searchState.isActive) {
-      repo.loadInitial();
-    }
-  }, [searchState.isActive, repo]);
+  // Handle content changes (after upload/delete)
+  const handleContentChange = () => {
+    searchState.clear();
+    repo.reset();
+  };
+
+  const { handleDelete } = useDeleteVideo(handleContentChange, showToast);
 
   return (
     <main className="min-h-screen bg-background">

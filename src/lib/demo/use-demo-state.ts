@@ -91,72 +91,106 @@ export function useSearch() {
 }
 
 // ============================================================================
-// useVideoRepository - Paginated video list
+// useVideoRepository - Paginated video list with page caching
 // ============================================================================
 
-export function useVideoRepository() {
+interface PageCache {
+  videos: Video[];
+  nextToken: string | null;
+}
+
+export function useVideoRepository(autoLoad = true) {
   const [videos, setVideos] = useState<Video[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [status, setStatus] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle');
 
-  // Pagination
+  // Pagination with cache
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [totalVideos, setTotalVideos] = useState(0);
   const [nextToken, setNextToken] = useState<string | null>(null);
-  const [pageCache, setPageCache] = useState<Map<number, { videos: Video[]; nextToken: string | null }>>(new Map());
+  const [pageCache, setPageCache] = useState<Map<number, PageCache>>(new Map());
 
-  const loadPage = useCallback(async (page: number, token: string | null = null) => {
+  // Auto-load on mount
+  useEffect(() => {
+    if (!autoLoad || status !== 'idle') return;
+    
+    const load = async () => {
+      setStatus('loading');
+      setIsLoading(true);
+      setError(null);
+
+      const response = await fetchVideosPage(null, REPO_PAGE_SIZE);
+
+      setIsLoading(false);
+
+      if (response.error) {
+        setError(response.error);
+        setStatus('error');
+      } else {
+        setVideos(response.videos);
+        setNextToken(response.next_page_token);
+        setTotalPages(response.total_pages);
+        setTotalVideos(response.total_videos);
+        setCurrentPage(1);
+        setStatus('loaded');
+        // Cache page 1
+        setPageCache(new Map([[1, { videos: response.videos, nextToken: response.next_page_token }]]));
+      }
+    };
+
+    load();
+  }, [autoLoad, status]);
+
+  const goNext = useCallback(async () => {
+    if (isLoading) return;
+    
+    const nextPage = currentPage + 1;
+    
     // Check cache first
-    const cached = pageCache.get(page);
+    const cached = pageCache.get(nextPage);
     if (cached) {
       setVideos(cached.videos);
       setNextToken(cached.nextToken);
-      setCurrentPage(page);
+      setCurrentPage(nextPage);
       return;
     }
-
+    
+    // Need to fetch
+    if (!nextToken) return;
+    
     setIsLoading(true);
     setError(null);
 
-    const response = await fetchVideosPage(token, REPO_PAGE_SIZE);
+    const response = await fetchVideosPage(nextToken, REPO_PAGE_SIZE);
+
+    setIsLoading(false);
 
     if (response.error) {
       setError(response.error);
     } else {
       setVideos(response.videos);
       setNextToken(response.next_page_token);
-      setTotalPages(response.total_pages);
-      setTotalVideos(response.total_videos);
-      setCurrentPage(page);
-
+      setCurrentPage(nextPage);
       // Cache this page
-      setPageCache(prev => new Map(prev).set(page, {
-        videos: response.videos,
-        nextToken: response.next_page_token,
+      setPageCache(prev => new Map(prev).set(nextPage, { 
+        videos: response.videos, 
+        nextToken: response.next_page_token 
       }));
     }
-
-    setIsLoading(false);
-  }, [pageCache]);
-
-  const loadInitial = useCallback(async () => {
-    if (videos.length > 0 || isLoading) return;
-    await loadPage(1, null);
-  }, [videos.length, isLoading, loadPage]);
-
-  const goNext = useCallback(async () => {
-    if (isLoading || !nextToken) return;
-    await loadPage(currentPage + 1, nextToken);
-  }, [isLoading, nextToken, currentPage, loadPage]);
+  }, [isLoading, currentPage, nextToken, pageCache]);
 
   const goPrev = useCallback(() => {
     if (isLoading || currentPage <= 1) return;
-    const cached = pageCache.get(currentPage - 1);
+    
+    const prevPage = currentPage - 1;
+    const cached = pageCache.get(prevPage);
+    
     if (cached) {
       setVideos(cached.videos);
       setNextToken(cached.nextToken);
-      setCurrentPage(currentPage - 1);
+      setCurrentPage(prevPage);
     }
   }, [isLoading, currentPage, pageCache]);
 
@@ -166,8 +200,10 @@ export function useVideoRepository() {
     setTotalPages(0);
     setTotalVideos(0);
     setNextToken(null);
-    setPageCache(new Map());
     setError(null);
+    setStatus('idle');
+    setIsLoading(false);
+    setPageCache(new Map());
   }, []);
 
   return {
@@ -179,7 +215,6 @@ export function useVideoRepository() {
     totalVideos,
     hasNext: nextToken !== null || pageCache.has(currentPage + 1),
     hasPrev: currentPage > 1,
-    loadInitial,
     goNext,
     goPrev,
     reset,
