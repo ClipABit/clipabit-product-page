@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, DragEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { uploadFiles, pollJobStatus, type JobStatus } from '@/src/lib/demo/api';
+import { uploadFiles, pollJobStatus, pollBatchStatus, type JobStatus, type ChildJobStatus } from '@/src/lib/demo/api';
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -27,18 +27,20 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
 
   // Upload state (managed locally)
   const [isUploading, setIsUploading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<JobStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Per-video progress state
+  const [videoStatuses, setVideoStatuses] = useState<ChildJobStatus[]>([]);
 
   const isComplete = status && ['completed', 'partial', 'failed'].includes(status.status);
 
   const resetState = useCallback(() => {
     setSelectedFiles([]);
     setIsUploading(false);
-    setProgress(0);
     setStatus(null);
     setError(null);
+    setVideoStatuses([]);
   }, []);
 
   const handleFileSelect = useCallback((files: FileList | null) => {
@@ -60,12 +62,25 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
   }, []);
 
   const handleUpload = useCallback(async () => {
-    if (selectedFiles.length === 0) return;
+    if (selectedFiles.length === 0 || isUploading) return;
 
     setIsUploading(true);
-    setProgress(0);
     setError(null);
     setStatus(null);
+
+    // Initialize video statuses immediately so progress bars appear right away
+    const initialStatuses: ChildJobStatus[] = selectedFiles.map((file, index) => ({
+      job_id: `pending-${index}`,
+      filename: file.name,
+      status: 'processing' as const,
+      progress_percent: 0,
+      current_stage: 'uploading',
+      chunks_processed: 0,
+      total_chunks: null,
+      size_bytes: file.size,
+      error: null,
+    }));
+    setVideoStatuses(initialStatuses);
 
     const response = await uploadFiles(selectedFiles);
 
@@ -82,6 +97,9 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
       return;
     }
 
+    // Check if batch or single upload
+    const isBatch = !!response.batch_job_id;
+
     // Poll for status
     const startTime = Date.now();
     const maxWait = 300000;
@@ -89,33 +107,72 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
     while (Date.now() - startTime < maxWait) {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      const jobStatus = await pollJobStatus(jobId);
-      setStatus(jobStatus);
+      if (isBatch) {
+        // Poll batch status for per-video progress
+        const batchStatus = await pollBatchStatus(jobId);
 
-      if (jobStatus.progress_percent !== undefined) {
-        setProgress(jobStatus.progress_percent);
-      }
-
-      if (jobStatus.error) {
-        setError(jobStatus.error);
-        break;
-      }
-
-      if (['completed', 'partial', 'failed'].includes(jobStatus.status)) {
-        if (jobStatus.status === 'completed') {
-          showToast(`All ${jobStatus.completed_count || selectedFiles.length} videos processed!`, 'success');
-        } else if (jobStatus.status === 'partial') {
-          showToast(`${jobStatus.completed_count} succeeded, ${jobStatus.failed_count} failed`, 'warning');
-        } else {
-          showToast(`All ${jobStatus.failed_count} videos failed`, 'error');
+        if (batchStatus.error) {
+          setError(batchStatus.error);
+          break;
         }
-        onSuccess();
-        break;
+
+        // Update overall status
+        setStatus({
+          status: batchStatus.status,
+          progress_percent: batchStatus.overall_progress_percent,
+          completed_count: batchStatus.completed_count,
+          failed_count: batchStatus.failed_count,
+          processing_count: batchStatus.processing_count,
+        });
+
+        // Update individual video statuses
+        setVideoStatuses(batchStatus.child_jobs);
+
+        if (['completed', 'partial', 'failed'].includes(batchStatus.status)) {
+          if (batchStatus.status === 'completed') {
+            showToast(`All ${batchStatus.completed_count} videos processed!`, 'success');
+          } else if (batchStatus.status === 'partial') {
+            showToast(`${batchStatus.completed_count} succeeded, ${batchStatus.failed_count} failed`, 'warning');
+          } else {
+            showToast(`All ${batchStatus.failed_count} videos failed`, 'error');
+          }
+          onSuccess();
+          // Auto-close dialog after a short delay
+          setTimeout(() => {
+            resetState();
+            onClose();
+          }, 1500);
+          return;
+        }
+      } else {
+        // Single video - use existing polling
+        const jobStatus = await pollJobStatus(jobId);
+        setStatus(jobStatus);
+
+        if (jobStatus.error) {
+          setError(jobStatus.error);
+          break;
+        }
+
+        if (['completed', 'partial', 'failed'].includes(jobStatus.status)) {
+          if (jobStatus.status === 'completed') {
+            showToast('Video processed successfully!', 'success');
+          } else {
+            showToast('Video processing failed', 'error');
+          }
+          onSuccess();
+          // Auto-close dialog after a short delay
+          setTimeout(() => {
+            resetState();
+            onClose();
+          }, 1500);
+          return;
+        }
       }
     }
 
     setIsUploading(false);
-  }, [selectedFiles, showToast, onSuccess]);
+  }, [selectedFiles, showToast, onSuccess, isUploading, resetState, onClose]);
 
   const handleClose = useCallback(() => {
     if (!isUploading || isComplete) {
@@ -163,28 +220,52 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
                 // Upload progress view
                 <div className="space-y-4">
                   <p className="text-foreground/70 text-center">
-                    {isComplete ? 'Upload complete!' : `Uploading ${selectedFiles.length} video(s)...`}
+                    {isComplete ? 'Processing complete!' : `Processing ${selectedFiles.length} video(s)...`}
                   </p>
 
-                  {/* Progress Bar */}
-                  <div className="w-full bg-foreground/10 rounded-full h-3 overflow-hidden">
-                    <motion.div
-                      className={`h-full rounded-full ${
-                        status?.status === 'failed' ? 'bg-red-500' :
-                        status?.status === 'partial' ? 'bg-yellow-500' :
-                        'bg-gradient-to-r from-blue-500 to-purple-600'
-                      }`}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progress}%` }}
-                    />
-                  </div>
+                  {/* Per-Video Progress */}
+                  {videoStatuses.length > 0 && (
+                    <div className="space-y-3 max-h-64 overflow-y-auto">
+                      {videoStatuses.map((video) => (
+                        <div key={video.job_id} className="p-3 bg-foreground/5 rounded-lg space-y-2">
+                          {/* Video Header */}
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium text-foreground truncate flex-1">
+                              {video.filename}
+                            </span>
+                            {video.status === 'completed' && (
+                              <span className="text-xs text-green-500 ml-2">✓ Done</span>
+                            )}
+                            {video.status === 'failed' && (
+                              <span className="text-xs text-red-500 ml-2">✗ Failed</span>
+                            )}
+                            {video.status === 'processing' && (
+                              <span className="text-xs text-blue-500 ml-2">Processing...</span>
+                            )}
+                          </div>
 
-                  {status && (
-                    <p className="text-sm text-center text-foreground/60">
-                      {status.completed_count !== undefined && (
-                        <>Completed: {status.completed_count} | Failed: {status.failed_count || 0}</>
-                      )}
-                    </p>
+                          {/* Progress Bar */}
+                          <div className="w-full bg-foreground/10 rounded-full h-2 overflow-hidden">
+                            <motion.div
+                              className={`h-full rounded-full ${
+                                video.status === 'failed' ? 'bg-red-500' :
+                                video.status === 'completed' ? 'bg-green-500' :
+                                'bg-blue-500'
+                              }`}
+                              initial={{ width: 0 }}
+                              animate={{ width: `${video.progress_percent}%` }}
+                            />
+                          </div>
+
+                          {/* Error Message */}
+                          {video.error && (
+                            <div className="p-2 bg-red-500/10 border border-red-500/20 rounded">
+                              <p className="text-xs text-red-400">{video.error}</p>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   )}
 
                   {error && (
@@ -267,7 +348,7 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
                     </button>
                     <button
                       onClick={handleUpload}
-                      disabled={selectedFiles.length === 0}
+                      disabled={selectedFiles.length === 0 || isUploading}
                       className="flex-1 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-xl disabled:opacity-50"
                     >
                       Upload

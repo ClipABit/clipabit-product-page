@@ -63,6 +63,31 @@ export interface UploadResponse {
   error?: string;
 }
 
+export interface ChildJobStatus {
+  job_id: string;
+  filename: string;
+  status: 'processing' | 'completed' | 'failed';
+  progress_percent: number;
+  current_stage: string;
+  chunks_processed: number;
+  total_chunks: number | null;
+  size_bytes: number;
+  error: string | null;
+}
+
+export interface BatchStatusResponse {
+  batch_job_id: string;
+  status: 'processing' | 'completed' | 'partial' | 'failed';
+  namespace: string;
+  total_videos: number;
+  completed_count: number;
+  failed_count: number;
+  processing_count: number;
+  overall_progress_percent: number;
+  child_jobs: ChildJobStatus[];
+  error?: string;
+}
+
 /**
  * Search videos by semantic query.
  */
@@ -191,6 +216,51 @@ export async function pollJobStatus(jobId: string): Promise<JobStatus> {
     }
   } catch (error) {
     return { status: 'failed', error: error instanceof Error ? error.message : 'Status check failed' };
+  }
+}
+
+/**
+ * Poll batch status to get per-video progress.
+ */
+export async function pollBatchStatus(batchJobId: string): Promise<BatchStatusResponse> {
+  try {
+    const params = new URLSearchParams({ batch_job_id: batchJobId });
+    // Replace /status with /batch-status in the endpoint
+    const batchStatusUrl = API_ENDPOINTS.STATUS.replace('/status', '/batch-status');
+    const response = await fetch(`${batchStatusUrl}?${params}`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(API_TIMEOUT_MS),
+    });
+
+    if (response.ok) {
+      return await response.json();
+    } else {
+      return {
+        batch_job_id: batchJobId,
+        status: 'failed',
+        namespace: '',
+        total_videos: 0,
+        completed_count: 0,
+        failed_count: 0,
+        processing_count: 0,
+        overall_progress_percent: 0,
+        child_jobs: [],
+        error: `Batch status check failed with status ${response.status}`
+      };
+    }
+  } catch (error) {
+    return {
+      batch_job_id: batchJobId,
+      status: 'failed',
+      namespace: '',
+      total_videos: 0,
+      completed_count: 0,
+      failed_count: 0,
+      processing_count: 0,
+      overall_progress_percent: 0,
+      child_jobs: [],
+      error: error instanceof Error ? error.message : 'Batch status check failed'
+    };
   }
 }
 
