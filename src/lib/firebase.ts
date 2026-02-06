@@ -6,6 +6,8 @@ const firebaseConfig = JSON.parse(
   process.env.NEXT_PUBLIC_FIREBASE_CONFIG || '{}'
 );
 
+console.log('Firebase Config Loaded:', firebaseConfig); // Debug log to verify config loading
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig); 
 const auth = getAuth(app);
