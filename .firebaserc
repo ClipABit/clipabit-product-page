@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "clipabit"
+    "default": "clipabit",
+    "staging": "clipabit-staging-9ec32"
   }
 }
