@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import GreenGradientText from '../ui/green-gradient-text'
 import RedGradientText from '../ui/red-gradient-text'
 import AnimatedTextCycle from '../ui/AnimatedTextCycle'
@@ -24,7 +25,7 @@ function Hero() {
                         </div>
                     </div>
 
-                    <div className="line2 pl-[10%]">
+                    <div className="line2 md:pl-[10%]">
                         <div className={`hero-subtitle-text text-black dark:text-white mt-2`}>
                             Search by{' '}
                             <HoverDefinition word="ideas">
@@ -41,7 +42,7 @@ function Hero() {
                         </div>
                     </div>
 
-                    <div className="line3 pl-[10%]">
+                    <div className="line3 md:pl-[10%]">
                         <div className={`hero-subtitle-text text-gray-600 dark:text-gray-300 mt-4`}>
                             Every{' '}
                             <AnimatedTextCycle
@@ -52,6 +53,15 @@ function Hero() {
                             />
                             , one search away
                         </div>
+                    </div>
+
+                    <div className="md:pl-[10%] mt-8">
+                        <Link
+                            href="/#waitlist"
+                            className="inline-block rounded-xl bg-[#FAAF04] px-7 py-3 text-lg md:text-xl font-semibold text-black transition-all duration-300 hover:brightness-110 hover:scale-105 active:scale-100 shadow-md hover:shadow-lg"
+                        >
+                            Join Waitlist
+                        </Link>
                     </div>
                 </div>
                 <div className='hidden md:flex flex-1 justify-center items-center mt-10 md:mt-0'>

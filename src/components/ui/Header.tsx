@@ -89,15 +89,6 @@ function Header({ }: Props) {
                         overlayClassName="bg-[#5AB9F3]"
                     />
                 </Link>
-                <Link href="/#waitlist" className="whitespace-nowrap">
-                    <InteractiveHoverButton
-                        asChild
-                        text="Waitlist"
-                        className="text-md md:text-xl"
-                        // Orange overlay for waitlist
-                        overlayClassName="bg-[#FAAF04]"
-                    />
-                </Link>
                 <Link href="https://gofund.me/e67494308" className="whitespace-nowrap">
                     <InteractiveHoverButton
                         asChild

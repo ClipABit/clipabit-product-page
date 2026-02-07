@@ -76,12 +76,6 @@ export function FluidMenu({ user }: FluidMenuProps) {
       color: '#5AB9F3',
     },
     {
-      key: 'waitlist',
-      label: 'Waitlist',
-      href: '/#waitlist',
-      color: '#FAAF04',
-    },
-    {
       key: 'support',
       label: 'Support Us!',
       href: 'https://gofund.me/e67494308',
