@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NEXT_PUBLIC_FIREBASE_CONFIG: ${{ github.base_ref == 'staging' && secrets.NEXT_PUBLIC_FIREBASE_CONFIG_STAGING || secrets.NEXT_PUBLIC_FIREBASE_CONFIG }}
+      NEXT_PUBLIC_DEMO_ENV: ${{ github.base_ref == 'staging' && 'staging' || 'prod' }}
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build

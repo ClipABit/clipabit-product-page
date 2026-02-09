@@ -24,6 +24,7 @@ jobs:
     environment: staging
     env:
       NEXT_PUBLIC_FIREBASE_CONFIG: ${{ secrets.NEXT_PUBLIC_FIREBASE_CONFIG_STAGING }}
+      NEXT_PUBLIC_DEMO_ENV: staging
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
@@ -45,6 +46,7 @@ jobs:
     environment: prod
     env:
       NEXT_PUBLIC_FIREBASE_CONFIG: ${{ github.ref_name == 'staging' && secrets.NEXT_PUBLIC_FIREBASE_CONFIG_STAGING || secrets.NEXT_PUBLIC_FIREBASE_CONFIG }}
+      NEXT_PUBLIC_DEMO_ENV: prod
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
