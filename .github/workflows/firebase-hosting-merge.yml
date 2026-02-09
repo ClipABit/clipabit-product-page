@@ -25,6 +25,7 @@ jobs:
     env:
       NEXT_PUBLIC_FIREBASE_CONFIG: ${{ secrets.NEXT_PUBLIC_FIREBASE_CONFIG_STAGING }}
       NEXT_PUBLIC_DEMO_ENV: staging
+      NEXT_PUBLIC_FILE_CHANGE_ENABLED: true
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
