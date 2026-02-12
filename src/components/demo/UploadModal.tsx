@@ -85,9 +85,9 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
     
     // Prevent multiple simultaneous uploads
     if (isUploadingRef.current) return;
+    isUploadingRef.current = true;
 
     setIsUploading(true);
-    isUploadingRef.current = true;
     setError(null);
     setStatus(null);
 
