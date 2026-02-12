@@ -81,9 +81,12 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
   }, []);
 
   const handleUpload = useCallback(async () => {
-    if (selectedFiles.length === 0 || isUploadingRef.current) return;
-
+    if (selectedFiles.length === 0) return;
+    
+    // Prevent multiple simultaneous uploads
+    if (isUploadingRef.current) return;
     isUploadingRef.current = true;
+
     setIsUploading(true);
     setError(null);
     setStatus(null);
