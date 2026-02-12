@@ -85,9 +85,9 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
     
     // Prevent multiple simultaneous uploads
     if (isUploadingRef.current) return;
-    isUploadingRef.current = true;
 
     setIsUploading(true);
+    isUploadingRef.current = true;
     setError(null);
     setStatus(null);
 
@@ -107,7 +107,11 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
 
     const response = await uploadFiles(selectedFiles);
 
-    if (!isMountedRef.current) return;
+    // If unmounted during upload, don't update state
+    if (!isMountedRef.current) {
+      isUploadingRef.current = false;
+      return;
+    }
 
     if (response.error) {
       setError(response.error);
@@ -135,13 +139,19 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // Check if component is still mounted
-      if (!isMountedRef.current) return;
+      if (!isMountedRef.current) {
+        isUploadingRef.current = false;
+        return;
+      }
 
       if (isBatch) {
         // Poll batch status for per-video progress
         const batchStatus = await pollBatchStatus(jobId);
 
-        if (!isMountedRef.current) return;
+        if (!isMountedRef.current) {
+          isUploadingRef.current = false;
+          return;
+        }
 
         if (batchStatus.error) {
           setError(batchStatus.error);
@@ -182,7 +192,10 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
         // Single video - use existing polling
         const jobStatus = await pollJobStatus(jobId);
 
-        if (!isMountedRef.current) return;
+        if (!isMountedRef.current) {
+          isUploadingRef.current = false;
+          return;
+        }
 
         setStatus(jobStatus);
 
