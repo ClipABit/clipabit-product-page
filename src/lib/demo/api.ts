@@ -9,6 +9,8 @@ const API_TIMEOUT_MS = 60000;
 
 /**
  * Create an AbortSignal with timeout fallback for browser compatibility.
+ * Note: In the fallback implementation, the timeout timer is not cleaned up
+ * if the fetch completes early, but this is safe since abort() is idempotent.
  */
 function createTimeoutSignal(timeoutMs: number): AbortSignal {
   // Check if AbortSignal.timeout is available (modern browsers)

@@ -36,6 +36,7 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
   // Refs for cleanup
   const isMountedRef = useRef(true);
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isUploadingRef = useRef(false);
 
   const isComplete = status && ['completed', 'partial', 'failed'].includes(status.status);
 
@@ -80,8 +81,9 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
   }, []);
 
   const handleUpload = useCallback(async () => {
-    if (selectedFiles.length === 0 || isUploading) return;
+    if (selectedFiles.length === 0 || isUploadingRef.current) return;
 
+    isUploadingRef.current = true;
     setIsUploading(true);
     setError(null);
     setStatus(null);
@@ -107,6 +109,7 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
     if (response.error) {
       setError(response.error);
       setIsUploading(false);
+      isUploadingRef.current = false;
       return;
     }
 
@@ -114,6 +117,7 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
     if (!jobId) {
       setError('No job ID returned');
       setIsUploading(false);
+      isUploadingRef.current = false;
       return;
     }
 
@@ -205,8 +209,9 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
 
     if (isMountedRef.current) {
       setIsUploading(false);
+      isUploadingRef.current = false;
     }
-  }, [selectedFiles, showToast, onSuccess, isUploading, resetState, onClose]);
+  }, [selectedFiles, showToast, onSuccess, resetState, onClose]);
 
   const handleClose = useCallback(() => {
     if (!isUploading || isComplete) {
