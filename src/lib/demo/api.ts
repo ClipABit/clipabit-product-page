@@ -7,6 +7,21 @@ import { API_ENDPOINTS, NAMESPACE, REPO_PAGE_SIZE, IS_FILE_CHANGE_ENABLED, ENVIR
 // Default timeout for API requests (60 seconds to account for cold starts)
 const API_TIMEOUT_MS = 60000;
 
+/**
+ * Create an AbortSignal with timeout fallback for browser compatibility.
+ */
+function createTimeoutSignal(timeoutMs: number): AbortSignal {
+  // Check if AbortSignal.timeout is available (modern browsers)
+  if (typeof AbortSignal.timeout === 'function') {
+    return AbortSignal.timeout(timeoutMs);
+  }
+  
+  // Fallback for browsers without AbortSignal.timeout support
+  const controller = new AbortController();
+  setTimeout(() => controller.abort(), timeoutMs);
+  return controller.signal;
+}
+
 // Types
 export interface VideoMetadata {
   presigned_url: string;
@@ -100,7 +115,7 @@ export async function searchVideos(query: string): Promise<SearchResponse> {
 
     const response = await fetch(`${API_ENDPOINTS.SEARCH}?${params}`, {
       method: 'GET',
-      signal: AbortSignal.timeout(API_TIMEOUT_MS),
+      signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 
     if (response.ok) {
@@ -132,7 +147,7 @@ export async function fetchVideosPage(
 
     const response = await fetch(`${API_ENDPOINTS.LIST_VIDEOS}?${params}`, {
       method: 'GET',
-      signal: AbortSignal.timeout(API_TIMEOUT_MS),
+      signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 
     if (response.ok) {
@@ -184,7 +199,7 @@ export async function uploadFiles(files: File[]): Promise<UploadResponse> {
     const response = await fetch(API_ENDPOINTS.UPLOAD, {
       method: 'POST',
       body: formData,
-      signal: AbortSignal.timeout(timeout),
+      signal: createTimeoutSignal(timeout),
     });
 
     if (response.ok) {
@@ -206,7 +221,7 @@ export async function pollJobStatus(jobId: string): Promise<JobStatus> {
     const params = new URLSearchParams({ job_id: jobId });
     const response = await fetch(`${API_ENDPOINTS.STATUS}?${params}`, {
       method: 'GET',
-      signal: AbortSignal.timeout(API_TIMEOUT_MS),
+      signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 
     if (response.ok) {
@@ -229,7 +244,7 @@ export async function pollBatchStatus(batchJobId: string): Promise<BatchStatusRe
     const batchStatusUrl = API_ENDPOINTS.STATUS.replace('/status', '/batch-status');
     const response = await fetch(`${batchStatusUrl}?${params}`, {
       method: 'GET',
-      signal: AbortSignal.timeout(API_TIMEOUT_MS),
+      signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 
     if (response.ok) {
@@ -283,7 +298,7 @@ export async function deleteVideo(
 
     const response = await fetch(`${API_ENDPOINTS.DELETE_VIDEO(hashedIdentifier)}?${params}`, {
       method: 'DELETE',
-      signal: AbortSignal.timeout(API_TIMEOUT_MS),
+      signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 
     if (response.ok) {

@@ -29,6 +29,13 @@ export function DeleteModal({
     }
   }, [hashedIdentifier, filename, onConfirm, onClose]);
 
+  const handleClose = useCallback(() => {
+    // Prevent closing while delete is in progress
+    if (!isDeleting) {
+      onClose();
+    }
+  }, [isDeleting, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -41,7 +48,7 @@ export function DeleteModal({
           {/* Backdrop */}
           <motion.div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={onClose}
+            onClick={handleClose}
           />
 
           {/* Modal */}
@@ -55,7 +62,7 @@ export function DeleteModal({
             <div className="flex items-center justify-between px-6 py-4 border-b border-foreground/10">
               <h2 className="text-xl font-semibold text-foreground">Delete Video</h2>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 disabled={isDeleting}
                 className="p-2 hover:bg-foreground/10 rounded-lg transition-colors disabled:opacity-50"
               >
@@ -102,7 +109,7 @@ export function DeleteModal({
               {/* Action Buttons */}
               <div className="flex gap-3">
                 <button
-                  onClick={onClose}
+                  onClick={handleClose}
                   disabled={isDeleting}
                   className="flex-1 py-3 bg-foreground/10 hover:bg-foreground/20 text-foreground font-medium rounded-xl transition-all disabled:opacity-50"
                 >

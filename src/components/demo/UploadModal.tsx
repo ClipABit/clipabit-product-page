@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef, DragEvent } from 'react';
+import { useState, useCallback, useRef, useEffect, DragEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { uploadFiles, pollJobStatus, pollBatchStatus, type JobStatus, type ChildJobStatus } from '@/src/lib/demo/api';
 
@@ -33,7 +33,21 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
   // Per-video progress state
   const [videoStatuses, setVideoStatuses] = useState<ChildJobStatus[]>([]);
 
+  // Refs for cleanup
+  const isMountedRef = useRef(true);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const isComplete = status && ['completed', 'partial', 'failed'].includes(status.status);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const resetState = useCallback(() => {
     setSelectedFiles([]);
@@ -41,6 +55,10 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
     setStatus(null);
     setError(null);
     setVideoStatuses([]);
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
   }, []);
 
   const handleFileSelect = useCallback((files: FileList | null) => {
@@ -84,6 +102,8 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
 
     const response = await uploadFiles(selectedFiles);
 
+    if (!isMountedRef.current) return;
+
     if (response.error) {
       setError(response.error);
       setIsUploading(false);
@@ -107,9 +127,14 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
     while (Date.now() - startTime < maxWait) {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
+      // Check if component is still mounted
+      if (!isMountedRef.current) return;
+
       if (isBatch) {
         // Poll batch status for per-video progress
         const batchStatus = await pollBatchStatus(jobId);
+
+        if (!isMountedRef.current) return;
 
         if (batchStatus.error) {
           setError(batchStatus.error);
@@ -138,15 +163,20 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
           }
           onSuccess();
           // Auto-close dialog after a short delay
-          setTimeout(() => {
-            resetState();
-            onClose();
+          closeTimeoutRef.current = setTimeout(() => {
+            if (isMountedRef.current) {
+              resetState();
+              onClose();
+            }
           }, 1500);
           return;
         }
       } else {
         // Single video - use existing polling
         const jobStatus = await pollJobStatus(jobId);
+
+        if (!isMountedRef.current) return;
+
         setStatus(jobStatus);
 
         if (jobStatus.error) {
@@ -162,16 +192,20 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
           }
           onSuccess();
           // Auto-close dialog after a short delay
-          setTimeout(() => {
-            resetState();
-            onClose();
+          closeTimeoutRef.current = setTimeout(() => {
+            if (isMountedRef.current) {
+              resetState();
+              onClose();
+            }
           }, 1500);
           return;
         }
       }
     }
 
-    setIsUploading(false);
+    if (isMountedRef.current) {
+      setIsUploading(false);
+    }
   }, [selectedFiles, showToast, onSuccess, isUploading, resetState, onClose]);
 
   const handleClose = useCallback(() => {
