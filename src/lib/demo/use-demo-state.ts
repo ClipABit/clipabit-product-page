@@ -213,7 +213,7 @@ export function useVideoRepository(autoLoad = true) {
     currentPage,
     totalPages,
     totalVideos,
-    hasNext: nextToken !== null || pageCache.has(currentPage + 1),
+    hasNext: nextToken !== null && videos.length >= REPO_PAGE_SIZE,
     hasPrev: currentPage > 1,
     goNext,
     goPrev,
