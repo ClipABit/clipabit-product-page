@@ -8,6 +8,9 @@ import { ThemeProvider } from "../lib/theme";
 import { LoadingProvider } from "../lib/loading-context";
 import LoadingScreen from "../components/ui/LoadingScreen";
 
+// Import config to validate environment variables at startup
+import "../lib/demo/config";
+
 const clashDisplay = localFont({
   variable: "--font-clash-display",
   src: "../../public/fonts/ClashDisplay-Variable.woff2",

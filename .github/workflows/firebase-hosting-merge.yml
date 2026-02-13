@@ -23,16 +23,18 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     env:
-      NEXT_PUBLIC_FIREBASE_CONFIG: ${{ secrets.NEXT_PUBLIC_FIREBASE_CONFIG }}
+      NEXT_PUBLIC_FIREBASE_CONFIG: ${{ secrets.NEXT_PUBLIC_FIREBASE_CONFIG_STAGING }}
+      NEXT_PUBLIC_DEMO_ENV: staging
+      NEXT_PUBLIC_FILE_CHANGE_ENABLED: true
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIPABIT }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CLIPABIT_STAGING }}
           channelId: live
-          projectId: clipabit-staging
+          projectId: clipabit-staging-9ec32
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
   # ------------------------------------------------------------------
@@ -44,7 +46,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     env:
-      NEXT_PUBLIC_FIREBASE_CONFIG: ${{ secrets.NEXT_PUBLIC_FIREBASE_CONFIG }}
+      NEXT_PUBLIC_FIREBASE_CONFIG:  ${{ secrets.NEXT_PUBLIC_FIREBASE_CONFIG }}
+      NEXT_PUBLIC_DEMO_ENV: prod
+      NEXT_PUBLIC_FILE_CHANGE_ENABLED: false
     steps:
       - uses: actions/checkout@v4
       - run: npm ci && npm run build

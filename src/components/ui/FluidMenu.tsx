@@ -72,7 +72,7 @@ export function FluidMenu({ user }: FluidMenuProps) {
     {
       key: 'demo',
       label: 'Demo',
-      href: 'https://clipabit.streamlit.app',
+      href: '/demo',
       color: '#5AB9F3',
     },
     {

@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 export default function DemoVideo() {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const videoUrl = "https://firebasestorage.googleapis.com/v0/b/clipabit.firebasestorage.app/o/demo.mp4?alt=media&token=204b3539-8e6a-4e4f-92c9-5873e1612515";
+    const videoUrl = "https://firebasestorage.googleapis.com/v0/b/clipabit.firebasestorage.app/o/Clipabit%20demo%20music.mp4?alt=media&token=9e9737ad-a071-4afe-ae77-fe278f0b6be9";
 
     useEffect(() => {
         const video = videoRef.current;
