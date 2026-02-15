@@ -64,7 +64,7 @@ function Hero() {
                         </Link>
                         <Link
                             href="https://clipabit.streamlit.app"
-                            className="inline-block px-7 py-3 text-lg md:text-xl font-semibold text-foreground/70 hover:text-foreground transition-all duration-300 hover:scale-105 active:scale-100"
+                            className="inline-block px-7 py-3 text-lg md:text-xl font-semibold text-foreground hover:text-foreground transition-all duration-300 hover:scale-105 active:scale-100"
                         >
                             Demo
                         </Link>
