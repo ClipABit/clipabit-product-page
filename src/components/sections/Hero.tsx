@@ -55,12 +55,18 @@ function Hero() {
                         </div>
                     </div>
 
-                    <div className="md:pl-[10%] mt-8">
+                    <div className="md:pl-[10%] mt-8 flex items-center justify-center md:justify-start gap-4">
                         <Link
                             href="/#waitlist"
                             className="inline-block rounded-xl bg-[#FAAF04] px-7 py-3 text-lg md:text-xl font-semibold text-black transition-all duration-300 hover:brightness-110 hover:scale-105 active:scale-100 shadow-md hover:shadow-lg"
                         >
-                            Join Waitlist
+                            Waitlist
+                        </Link>
+                        <Link
+                            href="https://clipabit.streamlit.app"
+                            className="inline-block px-7 py-3 text-lg md:text-xl font-semibold text-foreground hover:text-foreground transition-all duration-300 hover:scale-105 active:scale-100"
+                        >
+                            Demo
                         </Link>
                     </div>
                 </div>

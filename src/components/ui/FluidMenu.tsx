@@ -70,12 +70,6 @@ export function FluidMenu({ user }: FluidMenuProps) {
 
   const menuItems = [
     {
-      key: 'demo',
-      label: 'Demo',
-      href: '/demo',
-      color: '#5AB9F3',
-    },
-    {
       key: 'support',
       label: 'Support Us!',
       href: 'https://gofund.me/e67494308',
