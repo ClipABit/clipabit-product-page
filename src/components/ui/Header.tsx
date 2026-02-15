@@ -80,15 +80,6 @@ function Header({ }: Props) {
 
             {/* Desktop Navigation */}
             <div className='hidden md:flex items-center justify-end gap-2'>
-                <Link href="/demo" className="whitespace-nowrap">
-                    <InteractiveHoverButton
-                        asChild
-                        text="Demo"
-                        className="text-md md:text-xl"
-                        // Blue overlay for demo
-                        overlayClassName="bg-[#5AB9F3]"
-                    />
-                </Link>
                 <Link href="https://gofund.me/e67494308" className="whitespace-nowrap">
                     <InteractiveHoverButton
                         asChild
