@@ -5,17 +5,18 @@ import { LuSun, LuMoon } from "react-icons/lu"
 import { motion, AnimatePresence, type Variants } from "motion/react"
 import { useTheme } from '../../lib/theme'
 import Link from 'next/link'
-import { User } from 'firebase/auth'
+import { useAuth0 } from '@auth0/auth0-react'
 
 // Custom hook to safely check if component is mounted (client-side)
 const emptySubscribe = () => () => { }
 const useIsMounted = () => useSyncExternalStore(emptySubscribe, () => true, () => false)
 
 interface FluidMenuProps {
-  user: User | null | undefined
+  isAuthenticated: boolean
 }
 
-export function FluidMenu({ user }: FluidMenuProps) {
+export function FluidMenu({ isAuthenticated }: FluidMenuProps) {
+  const { loginWithRedirect } = useAuth0()
   const [isOpen, setIsOpen] = useState(false)
   const mounted = useIsMounted()
   const { theme, setTheme } = useTheme()
@@ -74,12 +75,14 @@ export function FluidMenu({ user }: FluidMenuProps) {
       label: 'Support Us!',
       href: 'https://gofund.me/e67494308',
       color: '#B37FEB',
+      onClick: undefined as (() => void) | undefined,
     },
     {
       key: 'auth',
-      label: user ? 'Dashboard' : 'Sign In',
-      href: user ? '/dashboard' : '/sign-in',
+      label: isAuthenticated ? 'Dashboard' : 'Sign In',
+      href: isAuthenticated ? '/dashboard' : undefined,
       color: '#FAAF04',
+      onClick: isAuthenticated ? undefined : () => { handleClose(); loginWithRedirect(); },
     },
   ]
 
@@ -176,13 +179,22 @@ export function FluidMenu({ user }: FluidMenuProps) {
                     animate="open"
                     exit="closed"
                   >
-                    <Link
-                      href={item.href}
-                      onClick={handleClose}
-                      className="block text-2xl font-medium text-foreground/80 hover:text-foreground transition-colors duration-200"
-                    >
-                      {item.label}
-                    </Link>
+                    {item.href ? (
+                      <Link
+                        href={item.href}
+                        onClick={handleClose}
+                        className="block text-2xl font-medium text-foreground/80 hover:text-foreground transition-colors duration-200"
+                      >
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={item.onClick}
+                        className="block text-2xl font-medium text-foreground/80 hover:text-foreground transition-colors duration-200"
+                      >
+                        {item.label}
+                      </button>
+                    )}
                   </motion.div>
                 ))}
 

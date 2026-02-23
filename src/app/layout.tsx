@@ -7,6 +7,7 @@ import Footer from "../components/ui/Footer";
 import { ThemeProvider } from "../lib/theme";
 import { LoadingProvider } from "../lib/loading-context";
 import LoadingScreen from "../components/ui/LoadingScreen";
+import { Auth0ProviderWrapper } from "../lib/auth0-provider";
 
 // Import config to validate environment variables at startup
 import "../lib/demo/config";
@@ -48,14 +49,16 @@ export default function RootLayout({
       <body
         className={`${clashDisplay.variable} antialiased`}
       >
-        <ThemeProvider>
-          <LoadingProvider>
-            <LoadingScreen />
-            <Header />
-            {children}
-            <Footer />
-          </LoadingProvider>
-        </ThemeProvider>
+        <Auth0ProviderWrapper>
+          <ThemeProvider>
+            <LoadingProvider>
+              <LoadingScreen />
+              <Header />
+              {children}
+              <Footer />
+            </LoadingProvider>
+          </ThemeProvider>
+        </Auth0ProviderWrapper>
       </body>
     </html>
   );

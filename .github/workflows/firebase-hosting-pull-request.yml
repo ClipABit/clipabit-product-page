@@ -12,7 +12,9 @@ jobs:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     env:
-      NEXT_PUBLIC_FIREBASE_CONFIG: ${{ github.base_ref == 'staging' && secrets.NEXT_PUBLIC_FIREBASE_CONFIG_STAGING || secrets.NEXT_PUBLIC_FIREBASE_CONFIG }}
+      NEXT_PUBLIC_AUTH0_DOMAIN: ${{ secrets.NEXT_PUBLIC_AUTH0_DOMAIN }}
+      NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ github.base_ref == 'staging' && secrets.NEXT_PUBLIC_AUTH0_CLIENT_ID_STAGING || secrets.NEXT_PUBLIC_AUTH0_CLIENT_ID }}
+      NEXT_PUBLIC_AUTH0_AUDIENCE: ${{ secrets.NEXT_PUBLIC_AUTH0_AUDIENCE }}
       NEXT_PUBLIC_DEMO_ENV: ${{ github.base_ref == 'staging' && 'staging' || 'prod' }}
       NEXT_PUBLIC_FILE_CHANGE_ENABLED: ${{ github.base_ref == 'staging' && 'true' || 'false' }}
     steps:

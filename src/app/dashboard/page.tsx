@@ -1,51 +1,27 @@
 'use client';
 
-import { useEffect, useState, useSyncExternalStore } from 'react';
-import { useRouter } from 'next/navigation';
-import { auth } from '@/src/lib/firebase';
-import { useAuthState } from '@/src/lib/hooks/firebase';
-import { signOut } from 'firebase/auth';
-
-// Custom hook to safely check if component is mounted (client-side)
-const emptySubscribe = () => () => { };
-const useIsMounted = () => useSyncExternalStore(emptySubscribe, () => true, () => false);
+import { useRef, useEffect } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
 export default function Dashboard() {
-    const user = useAuthState(auth);
-    const router = useRouter();
-    const [isRedirecting, setIsRedirecting] = useState(false);
-    const mounted = useIsMounted();
+    const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = useAuth0();
+    const redirectingRef = useRef(false);
 
-    // Redirect to sign-in if not authenticated
+    // Redirect to Auth0 login if not authenticated
     useEffect(() => {
-        // Only check after component is mounted and give auth state time to stabilize
-        if (!mounted) return;
-
-        // Add a small delay to ensure auth state is stable after navigation
-        const timer = setTimeout(() => {
-            if (user === null && !isRedirecting) {
-                setIsRedirecting(true);
-                router.push('/sign-in');
-            }
-        }, 500);
-
-        return () => clearTimeout(timer);
-    }, [user, router, isRedirecting, mounted]);
+        if (!isLoading && !isAuthenticated && !redirectingRef.current) {
+            redirectingRef.current = true;
+            loginWithRedirect();
+        }
+    }, [isLoading, isAuthenticated, loginWithRedirect]);
 
     // Sign out handler
-    const handleSignOut = async () => {
-        if (!auth) return;
-        try {
-            await signOut(auth);
-            // Redirect to homepage after signing out
-            router.push('/');
-        } catch (error) {
-            console.error('Error signing out:', error);
-        }
+    const handleSignOut = () => {
+        logout({ logoutParams: { returnTo: window.location.origin } });
     };
 
     // Show loading state while checking auth
-    if (user === undefined || user === null) {
+    if (isLoading || !isAuthenticated) {
         return (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="text-foreground">Loading...</div>
@@ -62,9 +38,9 @@ export default function Dashboard() {
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
-                                {user.email?.charAt(0).toUpperCase()}
+                                {user?.email?.charAt(0).toUpperCase()}
                             </div>
-                            <span className="text-foreground/70 text-sm">{user.email}</span>
+                            <span className="text-foreground/70 text-sm">{user?.email}</span>
                         </div>
                         <button
                             onClick={handleSignOut}
@@ -79,7 +55,7 @@ export default function Dashboard() {
                 <div className="bg-foreground/5 border border-foreground/10 rounded-xl p-6">
                     <h2 className="text-lg font-semibold text-foreground mb-2">Welcome back!</h2>
                     <p className="text-foreground/60">
-                        You&apos;re signed in as <span className="text-foreground">{user.email}</span>
+                        You&apos;re signed in as <span className="text-foreground">{user?.email}</span>
                     </p>
                 </div>
                 <div className="text-center p-6">
