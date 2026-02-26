@@ -23,7 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     env:
-      NEXT_PUBLIC_FIREBASE_CONFIG: ${{ secrets.NEXT_PUBLIC_FIREBASE_CONFIG_STAGING }}
+      NEXT_PUBLIC_AUTH0_DOMAIN: ${{ secrets.NEXT_PUBLIC_AUTH0_DOMAIN }}
+      NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_AUTH0_CLIENT_ID_STAGING }}
+      NEXT_PUBLIC_AUTH0_AUDIENCE: ${{ secrets.NEXT_PUBLIC_AUTH0_AUDIENCE }}
       NEXT_PUBLIC_DEMO_ENV: staging
       NEXT_PUBLIC_FILE_CHANGE_ENABLED: true
     steps:
@@ -46,7 +48,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: prod
     env:
-      NEXT_PUBLIC_FIREBASE_CONFIG:  ${{ secrets.NEXT_PUBLIC_FIREBASE_CONFIG }}
+      NEXT_PUBLIC_AUTH0_DOMAIN: ${{ secrets.NEXT_PUBLIC_AUTH0_DOMAIN }}
+      NEXT_PUBLIC_AUTH0_CLIENT_ID: ${{ secrets.NEXT_PUBLIC_AUTH0_CLIENT_ID }}
+      NEXT_PUBLIC_AUTH0_AUDIENCE: ${{ secrets.NEXT_PUBLIC_AUTH0_AUDIENCE }}
       NEXT_PUBLIC_DEMO_ENV: prod
       NEXT_PUBLIC_FILE_CHANGE_ENABLED: false
     steps:

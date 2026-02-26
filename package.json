@@ -18,12 +18,12 @@
     "deploy:staging": "firebase deploy --project clipabit-staging-9ec32"
   },
   "dependencies": {
-    "firebase": "^12.6.0",
+    "@auth0/auth0-react": "^2.15.0",
     "firebase-tools": "^15.4.0",
     "motion": "^12.26.2",
     "next": "16.0.7",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
