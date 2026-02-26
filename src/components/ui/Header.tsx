@@ -98,14 +98,12 @@ function Header({ }: Props) {
                         />
                     </Link>
                 ) : (
-                    <button onClick={() => loginWithRedirect()} className="whitespace-nowrap">
-                        <InteractiveHoverButton
-                            asChild
-                            text="Sign In"
-                            className="text-md md:text-xl"
-                            overlayClassName="bg-[#FAAF04]"
-                        />
-                    </button>
+                    <InteractiveHoverButton
+                        onClick={() => loginWithRedirect()}
+                        text="Sign In"
+                        className="text-md md:text-xl whitespace-nowrap"
+                        overlayClassName="bg-[#FAAF04]"
+                    />
                 )}
                 <div className="flex items-center ml-2 md:ml-4">
                     <button
