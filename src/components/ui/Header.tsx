@@ -7,8 +7,7 @@ import { useTheme } from '../../lib/theme';
 import { useLoading } from '../../lib/loading-context';
 import { LuSun, LuMoon } from 'react-icons/lu';
 import { InteractiveHoverButton } from '../ui/InteractiveHoverButton';
-import { useAuthState } from '@/src/lib/hooks/firebase';
-import { auth } from '@/src/lib/firebase';
+import { useAuth0 } from '@auth0/auth0-react';
 import { FluidMenu } from '../ui/FluidMenu';
 
 function cn(...classes: Array<string | false | null | undefined>) {
@@ -20,7 +19,7 @@ type Props = Record<string, never>
 function Header({ }: Props) {
     const { theme, setTheme } = useTheme();
     const { isLoading, setIsLoading } = useLoading();
-    const user = useAuthState(auth);
+    const { isAuthenticated, loginWithRedirect } = useAuth0();
     const pathname = usePathname();
 
     const handleLogoClick = (e: React.MouseEvent) => {
@@ -75,7 +74,7 @@ function Header({ }: Props) {
             </div>
             {/* Mobile Navigation - FluidMenu */}
             <div className={cn("md:hidden transition-opacity duration-500", isLoading ? "opacity-0" : "opacity-100")}>
-                <FluidMenu user={user} />
+                <FluidMenu isAuthenticated={isAuthenticated} />
             </div>
 
             {/* Desktop Navigation */}
@@ -89,26 +88,22 @@ function Header({ }: Props) {
                         overlayClassName="bg-[#B37FEB]"
                     />
                 </Link>
-                {user ? (
+                {isAuthenticated ? (
                     <Link href="/dashboard" className="whitespace-nowrap">
                         <InteractiveHoverButton
                             asChild
                             text="Dashboard"
                             className="text-md md:text-xl"
-                            // Orange overlay for waitlist
                             overlayClassName="bg-[#FAAF04]"
                         />
                     </Link>
                 ) : (
-                    <Link href="/sign-in" className="whitespace-nowrap">
-                        <InteractiveHoverButton
-                            asChild
-                            text="Sign In"
-                            className="text-md md:text-xl"
-                            // Orange overlay for waitlist
-                            overlayClassName="bg-[#FAAF04]"
-                        />
-                    </Link>
+                    <InteractiveHoverButton
+                        onClick={() => loginWithRedirect()}
+                        text="Sign In"
+                        className="text-md md:text-xl whitespace-nowrap"
+                        overlayClassName="bg-[#FAAF04]"
+                    />
                 )}
                 <div className="flex items-center ml-2 md:ml-4">
                     <button
