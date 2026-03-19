@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { useSearch, useVideoRepository, useToast, useDeleteVideo } from '@/src/lib/demo/use-demo-state';
+import { useSearch, useVideoRepository, useDeleteVideo } from '@/src/lib/demo/use-demo-state';
 import { IS_FILE_CHANGE_ENABLED } from '@/src/lib/demo/config';
 import { VideoGrid } from '@/src/components/demo/VideoGrid';
 import { SearchBar } from '@/src/components/demo/SearchBar';
@@ -10,9 +10,16 @@ import { Pagination } from '@/src/components/demo/Pagination';
 import { UploadModal } from '@/src/components/demo/UploadModal';
 import { DeleteModal } from '@/src/components/demo/DeleteModal';
 
+type ToastType = 'success' | 'error' | 'warning' | 'info';
+
 export default function DemoPage() {
   // Simple, focused hooks
-  const { toast, showToast, clearToast } = useToast();
+  const [toast, setToast] = useState<{ type: ToastType; message: string } | null>(null);
+  const showToast = (message: string, type: ToastType = 'info') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 3000);
+  };
+  const clearToast = () => setToast(null);
   const searchState = useSearch();
   // Only auto-load when not in search mode
   const repo = useVideoRepository(!searchState.isActive);
@@ -43,7 +50,7 @@ export default function DemoPage() {
           <div className="mb-6">
             <button
               onClick={() => setIsUploadOpen(true)}
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
+              className="px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-xl transition-all flex items-center gap-2"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
