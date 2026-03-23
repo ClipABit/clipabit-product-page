@@ -1,93 +1,141 @@
-'use client'
+"use client";
 
-import Image from 'next/image'
-import Link from 'next/link'
-import GreenGradientText from '../ui/green-gradient-text'
-import RedGradientText from '../ui/red-gradient-text'
-import AnimatedTextCycle from '../ui/AnimatedTextCycle'
-import { TextHoverEffect } from '../ui/text-hover-effect'
-import DavinciGlow from '../ui/DavinciGlow'
-import HoverDefinition from '../ui/HoverDefinition'
-import LinkPreview from '../ui/LinkPreview'
+import Image from "next/image";
+import Link from "next/link";
+import GreenGradientText from "../ui/green-gradient-text";
+import RedGradientText from "../ui/red-gradient-text";
+import AnimatedTextCycle from "../ui/AnimatedTextCycle";
+import { TextHoverEffect } from "../ui/text-hover-effect";
+import DavinciGlow from "../ui/DavinciGlow";
+import HoverDefinition from "../ui/HoverDefinition";
+import LinkPreview from "../ui/LinkPreview";
 
+const RELEASE_ASSET_BASE =
+  "https://github.com/ClipABit/clipabit-product-page/releases/latest/download";
+const WINDOWS_INSTALLER_URL = `${RELEASE_ASSET_BASE}/ClipABit-Installer.exe`;
+const MAC_INSTALLER_URL = `${RELEASE_ASSET_BASE}/ClipABit.pkg`;
 
 function Hero() {
-    return (
-        <section>
-            <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-40 md:pt-24 pb-10'>
-                <div className='flex-1 text-center md:text-left'>
-                    <div className="line1">
-                        <div className="h-[180px] md:h-60">
-                            <TextHoverEffect
-                                text="ClipABit"
-                                className=""
-                            />
-                        </div>
-                    </div>
+  const handleInstallerDownload = () => {
+    const navigatorWithUAData = navigator as Navigator & {
+      userAgentData?: { platform?: string };
+    };
+    const platform =
+      navigatorWithUAData.userAgentData?.platform ??
+      navigator.platform ??
+      navigator.userAgent;
+    const normalizedPlatform = platform.toLowerCase();
 
-                    <div className="line2 md:pl-[10%]">
-                        <div className={`hero-subtitle-text text-black dark:text-white mt-2`}>
-                            Search by{' '}
-                            <HoverDefinition word="ideas">
-                                <span className="inline-block font-bold" style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
-                                    <GreenGradientText text="ideas" />
-                                </span>
-                            </HoverDefinition>{' '}
-                            , not{' '}
-                            <HoverDefinition word="timestamps">
-                                <span className="inline-block font-bold" style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}>
-                                    <RedGradientText>timestamps</RedGradientText>
-                                </span>
-                            </HoverDefinition>
-                        </div>
-                    </div>
+    const downloadUrl = normalizedPlatform.includes("mac")
+      ? MAC_INSTALLER_URL
+      : WINDOWS_INSTALLER_URL;
 
-                    <div className="line3 md:pl-[10%]">
-                        <div className={`hero-subtitle-text text-gray-600 dark:text-gray-300 mt-4`}>
-                            Every{' '}
-                            <AnimatedTextCycle
-                                words={['audio', 'moment', 'person']}
-                                interval={3500}
-                                className="font-bold"
-                                style={{ fontFamily: '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}
-                            />
-                            , one search away
-                        </div>
-                    </div>
+    window.location.assign(downloadUrl);
+  };
 
-                    <div className="md:pl-[10%] mt-8 flex items-center justify-center md:justify-start gap-4">
-                        <Link
-                            href="/#waitlist"
-                            className="inline-block rounded-xl bg-[#FAAF04] px-7 py-3 text-lg md:text-xl font-semibold text-black transition-all duration-300 hover:brightness-110 hover:scale-105 active:scale-100 shadow-md hover:shadow-lg"
-                        >
-                            Waitlist
-                        </Link>
-                        <Link
-                            href="/demo"
-                            className="inline-block px-7 py-3 text-lg md:text-xl font-semibold text-foreground hover:text-foreground transition-all duration-300 hover:scale-105 active:scale-100"
-                        >
-                            Demo
-                        </Link>
-                    </div>
-                </div>
-                <div className='hidden md:flex flex-1 justify-center items-center mt-10 md:mt-0'>
-                    <LinkPreview url="https://www.blackmagicdesign.com/ca/products/davinciresolve/studio">
-                        <DavinciGlow src="/DaVinci_Resolve_Studio 1.svg" width={200} height={200} className="w-40 md:w-60 h-auto" />
-                    </LinkPreview>
-                </div>
+  return (
+    <section>
+      <div className="flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-40 md:pt-24 pb-10">
+        <div className="flex-1 text-center md:text-left">
+          <div className="line1">
+            <div className="h-[180px] md:h-60">
+              <TextHoverEffect text="ClipABit" className="" />
             </div>
-            <div className='px-4 md:px-0 mt-14 md:mt-20'>
-                <Image
-                    src="/timeline_graphic.svg"
-                    alt="Video Editor Timeline"
-                    width={1400}
-                    height={120}
-                    className='mx-auto mb-10 w-full md:w-[900px] h-auto'
-                />
-            </div>
-        </section>
+          </div>
 
-    )
+          <div className="line2 md:pl-[10%]">
+            <div
+              className={`hero-subtitle-text text-black dark:text-white mt-2`}
+            >
+              Search by{" "}
+              <HoverDefinition word="ideas">
+                <span
+                  className="inline-block font-bold"
+                  style={{
+                    fontFamily:
+                      '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                  }}
+                >
+                  <GreenGradientText text="ideas" />
+                </span>
+              </HoverDefinition>{" "}
+              , not{" "}
+              <HoverDefinition word="timestamps">
+                <span
+                  className="inline-block font-bold"
+                  style={{
+                    fontFamily:
+                      '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                  }}
+                >
+                  <RedGradientText>timestamps</RedGradientText>
+                </span>
+              </HoverDefinition>
+            </div>
+          </div>
+
+          <div className="line3 md:pl-[10%]">
+            <div
+              className={`hero-subtitle-text text-gray-600 dark:text-gray-300 mt-4`}
+            >
+              Every{" "}
+              <AnimatedTextCycle
+                words={["audio", "moment", "person"]}
+                interval={3500}
+                className="font-bold"
+                style={{
+                  fontFamily:
+                    '-apple-system, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+                }}
+              />
+              , one search away
+            </div>
+          </div>
+
+          <div className="md:pl-[10%] mt-8 flex items-center justify-center md:justify-start gap-4">
+            <Link
+              href="/#waitlist"
+              className="inline-block rounded-xl bg-[#FAAF04] px-7 py-3 text-lg md:text-xl font-semibold text-black transition-all duration-300 hover:brightness-110 hover:scale-105 active:scale-100 shadow-md hover:shadow-lg"
+            >
+              Waitlist
+            </Link>
+            <Link
+              href="/demo"
+              className="inline-block px-7 py-3 text-lg md:text-xl font-semibold text-foreground hover:text-foreground transition-all duration-300 hover:scale-105 active:scale-100"
+            >
+              Demo
+            </Link>
+            <button
+              type="button"
+              onClick={handleInstallerDownload}
+              className="inline-block px-7 py-3 text-lg md:text-xl font-semibold text-foreground hover:text-foreground transition-all duration-300 hover:scale-105 active:scale-100"
+            >
+              Install now!
+            </button>
+          </div>
+        </div>
+        <div className="hidden md:flex flex-1 justify-center items-center mt-10 md:mt-0">
+          <LinkPreview url="https://www.blackmagicdesign.com/ca/products/davinciresolve/studio">
+            <DavinciGlow
+              src="/DaVinci_Resolve_Studio 1.svg"
+              width={200}
+              height={200}
+              className="w-40 md:w-60 h-auto"
+            />
+          </LinkPreview>
+        </div>
+      </div>
+      <div className="px-4 md:px-0 mt-14 md:mt-20">
+        <Image
+          src="/timeline_graphic.svg"
+          alt="Video Editor Timeline"
+          width={1400}
+          height={120}
+          className="mx-auto mb-10 w-full md:w-[900px] h-auto"
+        />
+      </div>
+    </section>
+  );
 }
 
-export default Hero
+export default Hero;
