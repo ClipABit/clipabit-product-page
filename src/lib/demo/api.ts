@@ -201,8 +201,6 @@ export async function uploadFiles(files: File[], token?: string): Promise<Upload
     return { error: `Upload not allowed in ${ENVIRONMENT} environment` };
   }
 
-  console.log(`Token: ${token}`)
-
   try {
     const formData = new FormData();
     files.forEach((file) => {
