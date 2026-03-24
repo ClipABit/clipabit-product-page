@@ -18,8 +18,6 @@ import { REPO_PAGE_SIZE } from './config';
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
 
-// ... (useToast remains unchanged)
-
 // ============================================================================
 // useSearch - Video search functionality
 // ============================================================================
