@@ -119,15 +119,18 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
 
       if (response.error) {
         setError(response.error);
-        // Keep isUploading true so error is visible in the progress view
-        // Don't reset isUploadingRef so user can see the error
+        // Keep isUploading state true so error is visible in the progress view,
+        // but reset the ref so future uploads are not permanently blocked.
+        isUploadingRef.current = false;
         return;
       }
 
       const jobId = response.job_id || response.batch_job_id;
       if (!jobId) {
         setError('No job ID returned');
-        // Keep isUploading true so error is visible
+        // Keep isUploading state true so error is visible,
+        // but reset the ref so future uploads are not permanently blocked.
+        isUploadingRef.current = false;
         return;
       }
 
