@@ -1,0 +1,117 @@
+name: Publish Installers From Repo A
+
+on:
+  repository_dispatch:
+    types: [installer-release]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: installer-release-${{ github.event.client_payload.resolve_plugin_tag || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  publish-installers:
+    name: Publish Installer Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Validate dispatch payload
+        shell: bash
+        env:
+          SOURCE_REPO: ${{ github.event.client_payload.source_repo }}
+          SOURCE_RUN_ID: ${{ github.event.client_payload.source_run_id }}
+          SOURCE_WORKFLOW: ${{ github.event.client_payload.source_workflow_name }}
+          RESOLVE_PLUGIN_TAG: ${{ github.event.client_payload.resolve_plugin_tag }}
+          ARTIFACT_TOKEN: ${{ secrets.INSTALLER_ACTIONS_READ_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          missing=()
+          [[ -n "${SOURCE_REPO}" ]] || missing+=("client_payload.source_repo")
+          [[ -n "${SOURCE_RUN_ID}" ]] || missing+=("client_payload.source_run_id")
+          [[ -n "${SOURCE_WORKFLOW}" ]] || missing+=("client_payload.source_workflow_name")
+          [[ -n "${RESOLVE_PLUGIN_TAG}" ]] || missing+=("client_payload.resolve_plugin_tag")
+          [[ -n "${ARTIFACT_TOKEN}" ]] || missing+=("secrets.INSTALLER_ACTIONS_READ_TOKEN")
+
+          if (( ${#missing[@]} > 0 )); then
+            printf '::error::Missing required fields: %s\n' "$(IFS=', '; echo "${missing[*]}")"
+            exit 1
+          fi
+
+          if ! [[ "${SOURCE_RUN_ID}" =~ ^[0-9]+$ ]]; then
+            echo "::error::client_payload.source_run_id must be numeric, got '${SOURCE_RUN_ID}'."
+            exit 1
+          fi
+
+          {
+            echo "SOURCE_REPO=${SOURCE_REPO}"
+            echo "SOURCE_RUN_ID=${SOURCE_RUN_ID}"
+            echo "SOURCE_WORKFLOW=${SOURCE_WORKFLOW}"
+            echo "RESOLVE_PLUGIN_TAG=${RESOLVE_PLUGIN_TAG}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Download installers from Repo A run artifacts
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.INSTALLER_ACTIONS_READ_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          mkdir -p artifacts dist
+
+          # Pull artifacts from the exact source run ID from Repo A.
+          gh run download "${SOURCE_RUN_ID}" \
+            --repo "${SOURCE_REPO}" \
+            --dir artifacts
+
+          pkg_path="$(find artifacts -type f -name 'ClipABit.pkg' | head -n1 || true)"
+          exe_path="$(find artifacts -type f -name 'ClipABit-Installer.exe' | head -n1 || true)"
+
+          [[ -f "${pkg_path}" ]] || { echo "::error::ClipABit.pkg not found in downloaded artifacts."; exit 1; }
+          [[ -f "${exe_path}" ]] || { echo "::error::ClipABit-Installer.exe not found in downloaded artifacts."; exit 1; }
+
+          cp "${pkg_path}" dist/ClipABit.pkg
+          cp "${exe_path}" dist/ClipABit-Installer.exe
+
+      - name: Verify required installer files are present
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f dist/ClipABit.pkg
+          test -f dist/ClipABit-Installer.exe
+
+      - name: Create or update release and upload assets
+        id: release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.client_payload.resolve_plugin_tag }}
+          name: ClipABit Installers ${{ github.event.client_payload.resolve_plugin_tag }}
+          files: |
+            dist/ClipABit.pkg
+            dist/ClipABit-Installer.exe
+          fail_on_unmatched_files: true
+          draft: false
+          prerelease: false
+          overwrite_files: true
+          body: |
+            Installer assets synced from ${{ github.event.client_payload.source_repo }}.
+
+            - Source workflow: ${{ github.event.client_payload.source_workflow_name }}
+            - Source run ID: ${{ github.event.client_payload.source_run_id }}
+
+      - name: Add release URL to workflow summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_url="https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RESOLVE_PLUGIN_TAG}"
+          {
+            echo "## Installer Release Published"
+            echo
+            echo "- Tag: ${RESOLVE_PLUGIN_TAG}"
+            echo "- Release URL: ${release_url}"
+            echo "- Source Repo: ${SOURCE_REPO}"
+            echo "- Source Workflow: ${SOURCE_WORKFLOW}"
+            echo "- Source Run ID: ${SOURCE_RUN_ID}"
+          } >> "${GITHUB_STEP_SUMMARY}"
