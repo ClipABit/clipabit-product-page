@@ -31,7 +31,7 @@ jobs:
           missing=()
           [[ -n "${SOURCE_REPO}" ]] || missing+=("client_payload.source_repo")
           [[ -n "${SOURCE_RUN_ID}" ]] || missing+=("client_payload.source_run_id")
-          [[ -n "${SOURCE_WORKFLOW}" ]] || missing+=("client_payload.source_workflow_name")
+          [[ -n "${SOURCE_WORKFLOW}" ]] || missing+=("client_payload.source_workflow")
           [[ -n "${RESOLVE_PLUGIN_TAG}" ]] || missing+=("client_payload.resolve_plugin_tag")
           [[ -n "${ARTIFACT_TOKEN}" ]] || missing+=("secrets.INSTALLER_ACTIONS_READ_TOKEN")
 
