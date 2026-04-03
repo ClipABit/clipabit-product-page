@@ -57,7 +57,7 @@ export const API_ENDPOINTS = {
   DELETE_VIDEO: (hashedIdentifier: string) => `${SERVER_BASE_URL}/videos/${hashedIdentifier}`,
   
   // Search endpoints
-  SEARCH: `${SEARCH_BASE_URL}/search`,
+  SEARCH: `${SEARCH_BASE_URL}/demo-search`,
   SEARCH_STATUS: `${SEARCH_BASE_URL}/status`,
 } as const;
 

@@ -22,7 +22,7 @@ jobs:
         env:
           SOURCE_REPO: ${{ github.event.client_payload.source_repo }}
           SOURCE_RUN_ID: ${{ github.event.client_payload.source_run_id }}
-          SOURCE_WORKFLOW: ${{ github.event.client_payload.source_workflow_name }}
+          SOURCE_WORKFLOW: ${{ github.event.client_payload.source_workflow }}
           RESOLVE_PLUGIN_TAG: ${{ github.event.client_payload.resolve_plugin_tag }}
           ARTIFACT_TOKEN: ${{ secrets.INSTALLER_ACTIONS_READ_TOKEN }}
         run: |

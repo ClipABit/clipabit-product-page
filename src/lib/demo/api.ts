@@ -108,15 +108,21 @@ export interface BatchStatusResponse {
 /**
  * Search videos by semantic query.
  */
-export async function searchVideos(query: string): Promise<SearchResponse> {
+export async function searchVideos(query: string, token?: string): Promise<SearchResponse> {
   try {
     const params = new URLSearchParams({
       query,
       namespace: NAMESPACE,
     });
 
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_ENDPOINTS.SEARCH}?${params}`, {
       method: 'GET',
+      headers,
       signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 
@@ -135,7 +141,8 @@ export async function searchVideos(query: string): Promise<SearchResponse> {
  */
 export async function fetchVideosPage(
   pageToken?: string | null,
-  pageSize: number = REPO_PAGE_SIZE
+  pageSize: number = REPO_PAGE_SIZE,
+  token?: string
 ): Promise<VideosPageResponse> {
   try {
     const params = new URLSearchParams({
@@ -147,8 +154,14 @@ export async function fetchVideosPage(
       params.append('page_token', pageToken);
     }
 
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_ENDPOINTS.LIST_VIDEOS}?${params}`, {
       method: 'GET',
+      headers,
       signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 
@@ -183,7 +196,7 @@ export async function fetchVideosPage(
 /**
  * Upload one or more video files.
  */
-export async function uploadFiles(files: File[]): Promise<UploadResponse> {
+export async function uploadFiles(files: File[], token?: string): Promise<UploadResponse> {
   if (!IS_FILE_CHANGE_ENABLED) {
     return { error: `Upload not allowed in ${ENVIRONMENT} environment` };
   }
@@ -195,12 +208,18 @@ export async function uploadFiles(files: File[]): Promise<UploadResponse> {
     });
     formData.append('namespace', NAMESPACE);
 
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     // Dynamic timeout: 300s base + 30s per file, minimum 600s
     const timeout = Math.max(600000, 300000 + files.length * 30000);
 
     const response = await fetch(API_ENDPOINTS.UPLOAD, {
       method: 'POST',
       body: formData,
+      headers,
       signal: createTimeoutSignal(timeout),
     });
 
@@ -208,21 +227,31 @@ export async function uploadFiles(files: File[]): Promise<UploadResponse> {
       return await response.json();
     } else {
       const text = await response.text();
-      return { error: `Upload failed with status ${response.status}. ${text}` };
+      const errorMsg = `Upload failed with status ${response.status}. ${text}`;
+      console.error('Upload error:', errorMsg);
+      return { error: errorMsg };
     }
   } catch (error) {
-    return { error: error instanceof Error ? error.message : 'Upload failed' };
+    const errorMsg = error instanceof Error ? error.message : 'Upload failed';
+    console.error('Upload exception:', error);
+    return { error: errorMsg };
   }
 }
 
 /**
  * Poll job status until completion or timeout.
  */
-export async function pollJobStatus(jobId: string): Promise<JobStatus> {
+export async function pollJobStatus(jobId: string, token?: string): Promise<JobStatus> {
   try {
     const params = new URLSearchParams({ job_id: jobId });
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_ENDPOINTS.STATUS}?${params}`, {
       method: 'GET',
+      headers,
       signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 
@@ -239,13 +268,19 @@ export async function pollJobStatus(jobId: string): Promise<JobStatus> {
 /**
  * Poll batch status to get per-video progress.
  */
-export async function pollBatchStatus(batchJobId: string): Promise<BatchStatusResponse> {
+export async function pollBatchStatus(batchJobId: string, token?: string): Promise<BatchStatusResponse> {
   try {
     const params = new URLSearchParams({ batch_job_id: batchJobId });
     // Replace /status with /batch-status in the endpoint
     const batchStatusUrl = API_ENDPOINTS.STATUS.replace('/status', '/batch-status');
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${batchStatusUrl}?${params}`, {
       method: 'GET',
+      headers,
       signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 
@@ -286,7 +321,8 @@ export async function pollBatchStatus(batchJobId: string): Promise<BatchStatusRe
  */
 export async function deleteVideo(
   hashedIdentifier: string,
-  filename: string
+  filename: string,
+  token?: string
 ): Promise<{ success: boolean; error?: string }> {
   if (!IS_FILE_CHANGE_ENABLED) {
     return { success: false, error: `Deletion not allowed in ${ENVIRONMENT} environment` };
@@ -298,8 +334,14 @@ export async function deleteVideo(
       namespace: NAMESPACE,
     });
 
+    const headers: Record<string, string> = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
     const response = await fetch(`${API_ENDPOINTS.DELETE_VIDEO(hashedIdentifier)}?${params}`, {
       method: 'DELETE',
+      headers,
       signal: createTimeoutSignal(API_TIMEOUT_MS),
     });
 

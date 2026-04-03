@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect, DragEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useAuth0 } from '@auth0/auth0-react';
 import { uploadFiles, pollJobStatus, pollBatchStatus, type JobStatus, type ChildJobStatus } from '@/src/lib/demo/api';
 
 interface UploadModalProps {
@@ -24,6 +25,7 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { getAccessTokenSilently, isAuthenticated } = useAuth0();
 
   // Upload state (managed locally)
   const [isUploading, setIsUploading] = useState(false);
@@ -105,136 +107,150 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
     }));
     setVideoStatuses(initialStatuses);
 
-    const response = await uploadFiles(selectedFiles);
+    try {
+      const token = isAuthenticated ? await getAccessTokenSilently() : undefined;
+      const response = await uploadFiles(selectedFiles, token);
 
-    // If unmounted during upload, don't update state
-    if (!isMountedRef.current) {
-      isUploadingRef.current = false;
-      return;
-    }
-
-    if (response.error) {
-      setError(response.error);
-      setIsUploading(false);
-      isUploadingRef.current = false;
-      return;
-    }
-
-    const jobId = response.job_id || response.batch_job_id;
-    if (!jobId) {
-      setError('No job ID returned');
-      setIsUploading(false);
-      isUploadingRef.current = false;
-      return;
-    }
-
-    // Check if batch or single upload
-    const isBatch = !!response.batch_job_id;
-
-    // Poll for status
-    const startTime = Date.now();
-    const maxWait = 300000;
-
-    while (Date.now() - startTime < maxWait) {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Check if component is still mounted
+      // If unmounted during upload, don't update state
       if (!isMountedRef.current) {
         isUploadingRef.current = false;
         return;
       }
 
-      if (isBatch) {
-        // Poll batch status for per-video progress
-        const batchStatus = await pollBatchStatus(jobId);
+      if (response.error) {
+        setError(response.error);
+        // Keep isUploading state true so error is visible in the progress view,
+        // but reset the ref so future uploads are not permanently blocked.
+        isUploadingRef.current = false;
+        return;
+      }
 
+      const jobId = response.job_id || response.batch_job_id;
+      if (!jobId) {
+        setError('No job ID returned');
+        // Keep isUploading state true so error is visible,
+        // but reset the ref so future uploads are not permanently blocked.
+        isUploadingRef.current = false;
+        return;
+      }
+
+      // Check if batch or single upload
+      const isBatch = !!response.batch_job_id;
+
+      // Poll for status
+      const startTime = Date.now();
+      const maxWait = 300000;
+
+      while (Date.now() - startTime < maxWait) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        // Check if component is still mounted
         if (!isMountedRef.current) {
           isUploadingRef.current = false;
           return;
         }
 
-        if (batchStatus.error) {
-          setError(batchStatus.error);
-          break;
-        }
+        if (isBatch) {
+          // Poll batch status for per-video progress
+          const batchStatus = await pollBatchStatus(jobId, token);
 
-        // Update overall status
-        setStatus({
-          status: batchStatus.status,
-          progress_percent: batchStatus.overall_progress_percent,
-          completed_count: batchStatus.completed_count,
-          failed_count: batchStatus.failed_count,
-          processing_count: batchStatus.processing_count,
-        });
-
-        // Update individual video statuses
-        setVideoStatuses(batchStatus.child_jobs);
-
-        if (['completed', 'partial', 'failed'].includes(batchStatus.status)) {
-          if (batchStatus.status === 'completed') {
-            showToast(`All ${batchStatus.completed_count} videos processed!`, 'success');
-          } else if (batchStatus.status === 'partial') {
-            showToast(`${batchStatus.completed_count} succeeded, ${batchStatus.failed_count} failed`, 'warning');
-          } else {
-            showToast(`All ${batchStatus.failed_count} videos failed`, 'error');
+          if (!isMountedRef.current) {
+            isUploadingRef.current = false;
+            return;
           }
-          onSuccess();
-          // Auto-close dialog after a short delay
-          closeTimeoutRef.current = setTimeout(() => {
-            if (isMountedRef.current) {
-              resetState();
-              onClose();
-            }
-          }, 1500);
-          return;
-        }
-      } else {
-        // Single video - use existing polling
-        const jobStatus = await pollJobStatus(jobId);
 
-        if (!isMountedRef.current) {
-          isUploadingRef.current = false;
-          return;
-        }
-
-        setStatus(jobStatus);
-
-        if (jobStatus.error) {
-          setError(jobStatus.error);
-          break;
-        }
-
-        if (['completed', 'partial', 'failed'].includes(jobStatus.status)) {
-          if (jobStatus.status === 'completed') {
-            showToast('Video processed successfully!', 'success');
-          } else {
-            showToast('Video processing failed', 'error');
+          if (batchStatus.error) {
+            setError(batchStatus.error);
+            setIsUploading(false);
+            isUploadingRef.current = false;
+            break;
           }
-          onSuccess();
-          // Auto-close dialog after a short delay
-          closeTimeoutRef.current = setTimeout(() => {
-            if (isMountedRef.current) {
-              resetState();
-              onClose();
+
+          // Update overall status
+          setStatus({
+            status: batchStatus.status,
+            progress_percent: batchStatus.overall_progress_percent,
+            completed_count: batchStatus.completed_count,
+            failed_count: batchStatus.failed_count,
+            processing_count: batchStatus.processing_count,
+          });
+
+          // Update individual video statuses
+          setVideoStatuses(batchStatus.child_jobs);
+
+          if (['completed', 'partial', 'failed'].includes(batchStatus.status)) {
+            if (batchStatus.status === 'completed') {
+              showToast(`All ${batchStatus.completed_count} videos processed!`, 'success');
+            } else if (batchStatus.status === 'partial') {
+              showToast(`${batchStatus.completed_count} succeeded, ${batchStatus.failed_count} failed`, 'warning');
+            } else {
+              showToast(`All ${batchStatus.failed_count} videos failed`, 'error');
             }
-          }, 1500);
-          return;
+            onSuccess();
+            // Auto-close dialog after a short delay
+            closeTimeoutRef.current = setTimeout(() => {
+              if (isMountedRef.current) {
+                resetState();
+                onClose();
+              }
+            }, 1500);
+            return;
+          }
+        } else {
+          // Single video - use existing polling
+          const jobStatus = await pollJobStatus(jobId, token);
+
+          if (!isMountedRef.current) {
+            isUploadingRef.current = false;
+            return;
+          }
+
+          setStatus(jobStatus);
+
+          if (jobStatus.error) {
+            setError(jobStatus.error);
+            setIsUploading(false);
+            isUploadingRef.current = false;
+            break;
+          }
+
+          if (['completed', 'partial', 'failed'].includes(jobStatus.status)) {
+            if (jobStatus.status === 'completed') {
+              showToast('Video processed successfully!', 'success');
+            } else {
+              showToast('Video processing failed', 'error');
+            }
+            onSuccess();
+            // Auto-close dialog after a short delay
+            closeTimeoutRef.current = setTimeout(() => {
+              if (isMountedRef.current) {
+                resetState();
+                onClose();
+              }
+            }, 1500);
+            return;
+          }
         }
       }
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Upload failed';
+      console.error('Upload error:', err);
+      setError(errorMsg);
+      // Keep isUploading true so error is visible
     }
 
-    if (isMountedRef.current) {
+    if (isMountedRef.current && !error) {
       setIsUploading(false);
       isUploadingRef.current = false;
     }
-  }, [selectedFiles, showToast, onSuccess, resetState, onClose]);
+  }, [selectedFiles, showToast, onSuccess, resetState, onClose, getAccessTokenSilently, isAuthenticated, error]);
 
   const handleClose = useCallback(() => {
-    if (!isUploading || isComplete) {
+    if (!isUploading || isComplete || error) {
       resetState();
       onClose();
     }
-  }, [isUploading, isComplete, resetState, onClose]);
+  }, [isUploading, isComplete, error, resetState, onClose]);
 
   const totalSize = selectedFiles.reduce((acc, file) => acc + file.size, 0);
 
@@ -329,7 +345,7 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
                     </div>
                   )}
 
-                  {isComplete && (
+                  {(isComplete || error) && (
                     <button
                       onClick={handleClose}
                       className="w-full py-3 bg-foreground/10 hover:bg-foreground/20 text-foreground font-medium rounded-xl transition-all"
@@ -404,7 +420,7 @@ export function UploadModal({ isOpen, onClose, onSuccess, showToast }: UploadMod
                     <button
                       onClick={handleUpload}
                       disabled={selectedFiles.length === 0 || isUploading}
-                      className="flex-1 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-xl disabled:opacity-50"
+                      className="flex-1 py-3 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-medium rounded-xl disabled:opacity-50"
                     >
                       Upload
                     </button>
