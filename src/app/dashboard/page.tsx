@@ -3,6 +3,10 @@
 import { useRef, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 
+const RELEASE_ASSET_BASE = 'https://github.com/ClipABit/clipabit-product-page/releases/latest/download';
+const WINDOWS_INSTALLER_URL = `${RELEASE_ASSET_BASE}/ClipABit-Installer.exe`;
+const MAC_INSTALLER_URL = `${RELEASE_ASSET_BASE}/ClipABit.pkg`;
+
 export default function Dashboard() {
     const { user, isAuthenticated, isLoading, loginWithRedirect, logout } = useAuth0();
     const redirectingRef = useRef(false);
@@ -37,7 +41,7 @@ export default function Dashboard() {
                     <h1 className="text-xl font-bold text-foreground hidden md:block">Dashboard</h1>
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
+                            <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
                                 {user?.email?.charAt(0).toUpperCase()}
                             </div>
                             <span className="text-foreground/70 text-sm">{user?.email}</span>
@@ -57,6 +61,26 @@ export default function Dashboard() {
                     <p className="text-foreground/60">
                         You&apos;re signed in as <span className="text-foreground">{user?.email}</span>
                     </p>
+                </div>
+                <div className="bg-foreground/5 border border-foreground/10 rounded-xl p-6">
+                    <h2 className="text-lg font-semibold text-foreground mb-2">Installers</h2>
+                    <p className="text-foreground/60 mb-4">
+                        Download the latest ClipABit installer for your operating system.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <a
+                            href={MAC_INSTALLER_URL}
+                            className="inline-flex items-center justify-center rounded-lg bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity"
+                        >
+                            Download for macOS (.pkg)
+                        </a>
+                        <a
+                            href={WINDOWS_INSTALLER_URL}
+                            className="inline-flex items-center justify-center rounded-lg border border-foreground/20 text-foreground px-4 py-2 text-sm font-medium hover:bg-foreground/5 transition-colors"
+                        >
+                            Download for Windows (.exe)
+                        </a>
+                    </div>
                 </div>
                 <div className="text-center p-6">
                     <p className="text-foreground">
