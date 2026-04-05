@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import GreenGradientText from '../ui/green-gradient-text'
@@ -9,9 +10,30 @@ import { TextHoverEffect } from '../ui/text-hover-effect'
 import DavinciGlow from '../ui/DavinciGlow'
 import HoverDefinition from '../ui/HoverDefinition'
 import LinkPreview from '../ui/LinkPreview'
+import { LuDownload } from 'react-icons/lu'
+
+const RELEASE_ASSET_BASE = 'https://github.com/ClipABit/clipabit-product-page/releases/latest/download'
+
+function getInstaller() {
+    if (typeof navigator === 'undefined') {
+        return { url: RELEASE_ASSET_BASE + '/ClipABit.pkg', platform: 'macOS' }
+    }
+    const ua = navigator.userAgent.toLowerCase()
+    if (ua.includes('win')) {
+        return { url: RELEASE_ASSET_BASE + '/ClipABit-Installer.exe', platform: 'Windows' }
+    }
+    return { url: RELEASE_ASSET_BASE + '/ClipABit.pkg', platform: 'macOS' }
+}
+
+function useInstaller() {
+    const [installer] = useState(getInstaller)
+    return installer
+}
 
 
 function Hero() {
+    const { url: installerUrl, platform } = useInstaller()
+
     return (
         <section>
             <div className='flex flex-col md:flex-row items-center justify-between px-4 md:px-20 pt-40 md:pt-24 pb-10'>
@@ -56,12 +78,13 @@ function Hero() {
                     </div>
 
                     <div className="md:pl-[10%] mt-8 flex items-center justify-center md:justify-start gap-4">
-                        <Link
-                            href="/#waitlist"
-                            className="inline-block rounded-xl bg-[#FAAF04] px-7 py-3 text-lg md:text-xl font-semibold text-black transition-all duration-300 hover:brightness-110 hover:scale-105 active:scale-100 shadow-md hover:shadow-lg"
+                        <a
+                            href={installerUrl}
+                            className="inline-flex items-center gap-2 rounded-xl bg-[#FAAF04] px-7 py-3 text-lg md:text-xl font-semibold text-black transition-all duration-300 hover:brightness-110 hover:scale-105 active:scale-100 shadow-md hover:shadow-lg"
                         >
-                            Waitlist
-                        </Link>
+                            <LuDownload className="w-5 h-5" />
+                            Download for {platform}
+                        </a>
                         <Link
                             href="/demo"
                             className="inline-block px-7 py-3 text-lg md:text-xl font-semibold text-foreground hover:text-foreground transition-all duration-300 hover:scale-105 active:scale-100"
