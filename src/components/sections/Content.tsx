@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { motion } from "motion/react";
 import DemoVideo from "../ui/DemoVideo";
@@ -8,30 +8,10 @@ import { ContainerScroll } from "../ui/container-scroll-animation";
 import { HeroHighlight, Highlight } from "../ui/hero-highlight";
 import { GooeyText } from "../ui/gooey-text-morphing";
 import FilmReel from "../ui/FilmReel";
-import { useTheme } from '../../lib/theme'
-
-// Custom hook to safely check if component is mounted (client-side)
-const emptySubscribe = () => () => { };
-const useIsMounted = () => useSyncExternalStore(emptySubscribe, () => true, () => false);
 
 export default function Content() {
     const howRef = useRef<HTMLDivElement | null>(null);
-    const isMounted = useIsMounted();
-    const { theme } = useTheme();
 
-    useEffect(() => {
-        // Load Waitlister script
-        const waitlisterScript = document.createElement('script');
-        waitlisterScript.src = 'https://waitlister.me/waitlister.js';
-        waitlisterScript.async = true;
-        document.body.appendChild(waitlisterScript);
-
-        return () => {
-            if (document.body.contains(waitlisterScript)) {
-                document.body.removeChild(waitlisterScript);
-            }
-        };
-    }, []);
 
     return (
         <section className="flex flex-col items-center justify-center space-y-32 md:space-y-40 px-4 md:px-20 py-10 mt-24">
@@ -151,17 +131,6 @@ export default function Content() {
                 </ContainerScroll>
             </section>
 
-            <section id="waitlist" className="w-full flex flex-col items-center justify-center text-center px-4">
-                {/* Waitlist form is only rendered on client to prevent hydration errors */}
-                {isMounted && (
-                    <div
-                        className="waitlister-form w-full sm:w-[85%] md:w-[75%] lg:w-[60%] xl:w-[50%]"
-                        data-waitlist-key="-i8DggpXQdia"
-                        data-height="350px"
-                        style={theme === 'dark' ? { filter: 'invert(1) hue-rotate(180deg)' } : {}}
-                    ></div>
-                )}
-            </section>
         </section>
 
     )
