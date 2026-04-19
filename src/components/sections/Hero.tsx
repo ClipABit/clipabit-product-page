@@ -10,6 +10,7 @@ import { TextHoverEffect } from '../ui/text-hover-effect'
 import DavinciGlow from '../ui/DavinciGlow'
 import HoverDefinition from '../ui/HoverDefinition'
 import LinkPreview from '../ui/LinkPreview'
+import SecurityBypassModal from '../ui/SecurityBypassModal'
 import { LuDownload } from 'react-icons/lu'
 
 const RELEASE_ASSET_BASE = 'https://github.com/ClipABit/clipabit-product-page/releases/latest/download'
@@ -33,6 +34,7 @@ function useInstaller() {
 
 function Hero() {
     const { url: installerUrl, platform } = useInstaller()
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     return (
         <section>
@@ -80,6 +82,7 @@ function Hero() {
                     <div className="md:pl-[10%] mt-8 flex items-center justify-center md:justify-start gap-4">
                         <a
                             href={installerUrl}
+                            onClick={() => setIsModalOpen(true)}
                             className="inline-flex items-center gap-2 rounded-xl bg-[#FAAF04] px-7 py-3 text-lg md:text-xl font-semibold text-black transition-all duration-300 hover:brightness-110 hover:scale-105 active:scale-100 shadow-md hover:shadow-lg"
                         >
                             <LuDownload className="w-5 h-5" />
@@ -108,6 +111,12 @@ function Hero() {
                     className='mx-auto mb-10 w-full md:w-[900px] h-auto'
                 />
             </div>
+
+            <SecurityBypassModal 
+                isOpen={isModalOpen} 
+                onClose={() => setIsModalOpen(false)} 
+                platform={platform} 
+            />
         </section>
 
     )
